@@ -1,0 +1,3 @@
+[submodule "bestwidgets"]
+	path = bestwidgets
+	url = https://github.com/jpzm/bw
