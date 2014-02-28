@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2007, 2008 Insecure.Com LLC.
+# Copyright (C) 2007-2008 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,9 +24,15 @@ import gobject
 
 import bestwidgets as bw
 
+from core.I18n import _
 
-PORTS_HEADER = ['Port', 'Protocol', 'State', 'Service', 'Method']
-EXTRAPORTS_HEADER = ['Count', 'State', 'Reasons']
+
+PORTS_HEADER = [_("Port"),
+                _("Protocol"),
+                _("State"),
+                _("Service"),
+                _("Method")]
+EXTRAPORTS_HEADER = [_("Count"), _("State"), _("Reasons")]
 
 SERVICE_COLORS = {'open'            : '#ffd5d5',
                   'closed'          : '#d5ffd5',
@@ -35,27 +41,27 @@ SERVICE_COLORS = {'open'            : '#ffd5d5',
                   'open|filtered'   : '#ffd5d5',
                   'closed|filtered' : '#d5ffd5'}
 
-TRACE_HEADER = ['TTL', 'RTT', 'IP', 'Hostname']
+TRACE_HEADER = [_("TTL"), _("RTT"), _("IP"), _("Hostname")]
 
-TRACE_TEXT = """\
-Traceroute on port <b>%s/%s</b> totalized <b>%d</b> known hops.\
-"""
+TRACE_TEXT = _("""\
+Traceroute on port <b>%s</b> totalized <b>%d</b> known hops.\
+""")
 
-NO_TRACE_TEXT = "No traceroute information available."
+NO_TRACE_TEXT = _("No traceroute information available.")
 
 HOP_COLOR = {'known'   : '#ffffff',
              'unknown' : '#cccccc'}
 
 SYSTEM_ADDRESS_TEXT = "[%s] %s"
 
-OSMATCH_HEADER = ['%', 'Name', 'DB Line']
-OSCLASS_HEADER = ['%', 'Vendor', 'Type', 'Family', 'Version']
+OSMATCH_HEADER = [_("%"), _("Name"), _("DB Line")]
+OSCLASS_HEADER = [_("%"), _("Vendor"), _("Type"), _("Family"), _("Version")]
 
 USED_PORTS_TEXT = "%d/%s %s"
 
-TCP_SEQ_NOTE = """\
+TCP_SEQ_NOTE = _("""\
 <b>*</b> TCP sequence <i>index</i> equal to %d and <i>difficulty</i> is "%s".\
-"""
+""")
 
 
 
@@ -82,9 +88,9 @@ class NodeNotebook(gtk.Notebook):
         self.__trace_page = TraceroutePage(self.__node)
 
         # packing notebook elements
-        self.append_page(self.__system_page, bw.BWLabel('General'))
-        self.append_page(self.__services_page, bw.BWLabel('Services'))
-        self.append_page(self.__trace_page, bw.BWLabel('Traceroute'))
+        self.append_page(self.__system_page, bw.BWLabel(_("General")))
+        self.append_page(self.__services_page, bw.BWLabel(_("Services")))
+        self.append_page(self.__trace_page, bw.BWLabel(_("Traceroute")))
 
 
 
@@ -128,7 +134,7 @@ class ServicesPage(gtk.Notebook):
 
         # ports information
         number_of_ports = len(self.__node.get_info('ports'))
-        self.__ports_label = bw.BWLabel('Ports (%s)' % number_of_ports)
+        self.__ports_label = bw.BWLabel(_("Ports (%s)") % number_of_ports)
 
         self.__ports_scroll = bw.BWScrolledWindow()
 
@@ -150,13 +156,13 @@ class ServicesPage(gtk.Notebook):
                 service_name = port['service']['name']
 
             else:
-                service_name = '<unknown>'
+                service_name = _("<unknown>")
 
             if port['service'].has_key('method'):
                 service_method = port['service']['method']
 
             else:
-                service_method = '<none>'
+                service_method = _("<none>")
 
             reference = self.__ports_store.append(None,
                                                   [port['id'],
@@ -181,12 +187,12 @@ class ServicesPage(gtk.Notebook):
 
                 if key in ['servicefp', 'extrainfo']:
 
-                    text = '[%d] service: %s' % (port['id'], key)
+                    text = _("[%d] service: %s") % (port['id'], key)
 
                     self.__select_combobox.append_text(text)
                     self.__text.append(port['service'][key])
 
-                    value = '<special field>'
+                    value = _("<special field>")
 
                 else:
                     value = port['service'][key]
@@ -202,7 +208,7 @@ class ServicesPage(gtk.Notebook):
 
             for script in port['scripts']:
 
-                text = '[%d] script: %s' % (port['id'], script['id'])
+                text = _("[%d] script: %s") % (port['id'], script['id'])
 
                 self.__select_combobox.append_text(text)
                 self.__text.append(script['output'])
@@ -212,7 +218,7 @@ class ServicesPage(gtk.Notebook):
                                            'script',
                                            'id',
                                            script['id'],
-                                           '<special field>',
+                                           _("<special field>"),
                                            'white',
                                            True])
 
@@ -291,14 +297,14 @@ class ServicesPage(gtk.Notebook):
 
             self.__xports_treeview.append_column(self.__xports_column[i])
 
-        xports_label_text = 'Extraports (%s)' % number_of_xports
+        xports_label_text = _("Extraports (%s)") % number_of_xports
         self.__xports_label = bw.BWLabel(xports_label_text)
 
         self.__xports_scroll.add_with_viewport(self.__xports_treeview)
 
         self.append_page(self.__ports_scroll, self.__ports_label)
         self.append_page(self.__xports_scroll, self.__xports_label)
-        self.append_page(self.__viewer, bw.BWLabel('Special fields'))
+        self.append_page(self.__viewer, bw.BWLabel(_("Special fields")))
 
         if len(self.__text) > 0:
             self.__select_combobox.set_active(0)
@@ -335,17 +341,17 @@ class SystemPage(bw.BWScrolledWindow):
 
         self.__cell = gtk.CellRendererText()
 
-        self.__general_frame = bw.BWExpander('General information')
-        self.__sequences_frame = bw.BWExpander('Sequences')
-        self.__os_frame = bw.BWExpander('Operating System')
+        self.__general_frame = bw.BWExpander(_("General information"))
+        self.__sequences_frame = bw.BWExpander(_("Sequences"))
+        self.__os_frame = bw.BWExpander(_("Operating System"))
 
-        self.__sequences_frame.bw_add(gtk.Label('No sequence information.'))
-        self.__os_frame.bw_add(gtk.Label('No OS information.'))
+        self.__sequences_frame.bw_add(gtk.Label(_("No sequence information.")))
+        self.__os_frame.bw_add(gtk.Label(_("No OS information.")))
 
         # general information widgets
         self.__general = bw.BWTable(3, 2)
 
-        self.__address_label = bw.BWSectionLabel('Address:')
+        self.__address_label = bw.BWSectionLabel(_("Address:"))
         self.__address_list = gtk.combo_box_entry_new_text()
         self.__address_list.child.set_editable(False)
 
@@ -368,7 +374,7 @@ class SystemPage(bw.BWScrolledWindow):
 
         if self.__node.get_info('hostnames') != None:
 
-            self.__hostname_label = bw.BWSectionLabel('Hostname:')
+            self.__hostname_label = bw.BWSectionLabel(_("Hostname:"))
             self.__hostname_list = gtk.combo_box_entry_new_text()
             self.__hostname_list.child.set_editable(False)
 
@@ -387,12 +393,12 @@ class SystemPage(bw.BWScrolledWindow):
 
         if self.__node.get_info('uptime') != None:
 
-            self.__uptime_label = bw.BWSectionLabel('Last boot:')
+            self.__uptime_label = bw.BWSectionLabel(_("Last boot:"))
 
             seconds = self.__node.get_info('uptime')['seconds']
             lastboot = self.__node.get_info('uptime')['lastboot']
 
-            text = '%s (%s seconds).' % (lastboot, seconds)
+            text = _("%s (%s seconds).") % (lastboot, seconds)
 
             self.__uptime_value = bw.BWLabel(text)
             self.__uptime_value.set_selectable(True)
@@ -414,12 +420,12 @@ class SystemPage(bw.BWScrolledWindow):
 
         if len(sequences) > 0:
 
-            self.__sequences.attach(bw.BWSectionLabel('Class'), 1, 2, 0, 1)
-            self.__sequences.attach(bw.BWSectionLabel('Values'), 2, 3, 0, 1)
+            self.__sequences.attach(bw.BWSectionLabel(_("Class")), 1, 2, 0, 1)
+            self.__sequences.attach(bw.BWSectionLabel(_("Values")), 2, 3, 0, 1)
 
-            self.__sequences.attach(bw.BWSectionLabel('TCP *'), 0, 1, 1, 2)
-            self.__sequences.attach(bw.BWSectionLabel('IP ID'), 0, 1, 2, 3)
-            self.__sequences.attach(bw.BWSectionLabel('TCP Timestamp'),
+            self.__sequences.attach(bw.BWSectionLabel(_("TCP *")), 0, 1, 1, 2)
+            self.__sequences.attach(bw.BWSectionLabel(_("IP ID")), 0, 1, 2, 3)
+            self.__sequences.attach(bw.BWSectionLabel(_("TCP Timestamp")),
                                     0,
                                     1,
                                     3,
@@ -535,7 +541,8 @@ class SystemPage(bw.BWScrolledWindow):
 
                 self.__match_scroll.add_with_viewport(self.__match_treeview)
 
-                self.__os.append_page(self.__match_scroll, bw.BWLabel('Match'))
+                self.__os.append_page(self.__match_scroll,
+                                      bw.BWLabel(_("Match")))
 
             if os.has_key('classes'):
 
@@ -585,7 +592,8 @@ class SystemPage(bw.BWScrolledWindow):
 
                 self.__class_scroll.add_with_viewport(self.__class_treeview)
 
-                self.__os.append_page(self.__class_scroll, bw.BWLabel('Class'))
+                self.__os.append_page(self.__class_scroll,
+                                      bw.BWLabel(_("Class")))
 
             self.__fp_viewer = bw.BWTextEditor()
             self.__fp_viewer.bw_modify_font(self.__font)
@@ -593,7 +601,7 @@ class SystemPage(bw.BWScrolledWindow):
             self.__fp_viewer.bw_set_text(os['fingerprint'])
 
             self.__fp_ports = bw.BWHBox()
-            self.__fp_label = bw.BWSectionLabel('Used ports:')
+            self.__fp_label = bw.BWSectionLabel(_("Used ports:"))
 
             self.__fp_ports_list = gtk.combo_box_entry_new_text()
             self.__fp_ports_list.child.set_editable(False)
@@ -616,7 +624,8 @@ class SystemPage(bw.BWScrolledWindow):
 
                 self.__fp_vbox.bw_pack_start_noexpand_nofill(self.__fp_ports)
 
-            self.__os.append_page(self.__fp_viewer, bw.BWLabel('Fingerprint'))
+            self.__os.append_page(self.__fp_viewer,
+                                  bw.BWLabel(_("Fingerprint")))
             self.__fp_vbox.bw_pack_start_expand_fill(self.__os)
 
             self.__os_frame.bw_add(self.__fp_vbox)
@@ -691,7 +700,7 @@ class TraceroutePage(bw.BWVBox):
                 else:
                     self.__trace_store.append([i,
                                                '',
-                                               '<unknown>',
+                                               _("<unknown>"),
                                                '',
                                                HOP_COLOR['unknown'],
                                                True])
@@ -721,7 +730,6 @@ class TraceroutePage(bw.BWVBox):
             self.__trace_scroll.add_with_viewport(self.__trace_treeview)
 
             self.__trace_info = (self.__node.get_info('trace')['port'],
-                                 self.__node.get_info('trace')['protocol'],
                                  len(self.__node.get_info('trace')['hops']))
 
             self.__trace_label = bw.BWLabel(TRACE_TEXT % self.__trace_info)

@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2008 Insecure.Com LLC.
+# Copyright (C) 2008 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 import gtk
 import pango
 
+from core.I18n import _
 from core.Info import INFO
 from gui.Image import Pixmaps
 

@@ -1,0 +1,476 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: RadialNet 0.45\n"
+"POT-Creation-Date: 2008-11-12 21:34+BRT\n"
+"PO-Revision-Date: \n"
+"Last-Translator: João Paulo de Souza Medeiros <ignotus21@gmail.com>\n"
+"Language-Team: João Paulo de Souza Medeiros <ignotus21@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: BRAZIL\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: core/I18n.py:59
+msgid "RadialNet supports i18n."
+msgstr "RadialNet possui suporte a i18n."
+
+#: gui/Application.py:120
+msgid "It is not possible open file: %s."
+msgstr "Não foi possível abrir o arquivo: %s."
+
+#: gui/Application.py:123
+msgid "Error opening file."
+msgstr "Erro ao abrir arquivo."
+
+#: gui/BackendForm.py:291
+#: gui/ScanDialog.py:79
+#: gui/Toolbar.py:119
+msgid "Scan"
+msgstr "Rastrear"
+
+#: gui/BackendForm.py:296
+msgid "Load"
+msgstr "Carregar"
+
+#: gui/BackendForm.py:308
+msgid "Auto-scroll"
+msgstr "Rolar automaticamente"
+
+#: gui/BackendForm.py:314
+msgid "Highlight"
+msgstr "Aplicar cores"
+
+#: gui/BackendForm.py:318
+msgid "Wrap"
+msgstr "Quebrar texto"
+
+#: gui/ControlWidget.py:80
+msgid "Action"
+msgstr "Ação"
+
+#: gui/ControlWidget.py:98
+msgid "Change focus"
+msgstr "Mudar foco"
+
+#: gui/ControlWidget.py:104
+msgid "Show information"
+msgstr "Mostrar informação"
+
+#: gui/ControlWidget.py:110
+msgid "Group children"
+msgstr "Agrupar filhos"
+
+#: gui/ControlWidget.py:117
+msgid "Fill region"
+msgstr "Preencher região"
+
+#: gui/ControlWidget.py:123
+msgid "Red"
+msgstr "Vermelho"
+
+#: gui/ControlWidget.py:124
+msgid "Yellow"
+msgstr "Amarelo"
+
+#: gui/ControlWidget.py:125
+msgid "Green"
+msgstr "Verde"
+
+#: gui/ControlWidget.py:455
+msgid "<b>Fisheye</b> on ring"
+msgstr "<b>Lente</b> no anel"
+
+#: gui/ControlWidget.py:470
+msgid "with interest factor"
+msgstr "com fator de interesse"
+
+#: gui/ControlWidget.py:475
+msgid "and spread factor"
+msgstr "e fator de espelhamento"
+
+#: gui/ControlWidget.py:587
+msgid "Interpolation"
+msgstr "Interpolação"
+
+#: gui/ControlWidget.py:599
+msgid "Cartesian"
+msgstr "Cartesiana"
+
+#: gui/ControlWidget.py:601
+msgid "Polar"
+msgstr "Polar"
+
+#: gui/ControlWidget.py:614
+msgid "Frames"
+msgstr "Quadros"
+
+#: gui/ControlWidget.py:675
+msgid "Layout"
+msgstr "Disposição"
+
+#: gui/ControlWidget.py:688
+msgid "Symmetric"
+msgstr "Simétrica"
+
+#: gui/ControlWidget.py:689
+msgid "Weighted"
+msgstr "Ponderada"
+
+#: gui/ControlWidget.py:749
+msgid "Ring gap"
+msgstr "Espaço anéis"
+
+#: gui/ControlWidget.py:753
+msgid "Lower ring gap"
+msgstr "Espaço mínimo"
+
+#: gui/ControlWidget.py:800
+msgid "address"
+msgstr "endereço"
+
+#: gui/ControlWidget.py:801
+msgid "hostname"
+msgstr "nome"
+
+#: gui/ControlWidget.py:802
+msgid "icon"
+msgstr "ícone"
+
+#: gui/ControlWidget.py:803
+msgid "latency"
+msgstr "latência"
+
+#: gui/ControlWidget.py:804
+msgid "ring"
+msgstr "anel"
+
+#: gui/ControlWidget.py:805
+msgid "region"
+msgstr "região"
+
+#: gui/ControlWidget.py:806
+msgid "slow in/out"
+msgstr "mover suave"
+
+#: gui/ControlWidget.py:819
+msgid "Enable"
+msgstr "Abilitar"
+
+#: gui/ControlWidget.py:885
+msgid "View"
+msgstr "Visão"
+
+#: gui/ControlWidget.py:898
+msgid "Zoom"
+msgstr "Ampliar"
+
+#: gui/ControlWidget.py:1132
+msgid "Navigation"
+msgstr "Navegação"
+
+#: gui/HostsViewer.py:33
+msgid "#"
+msgstr "#"
+
+#: gui/HostsViewer.py:33
+msgid "Hosts"
+msgstr "Nomes"
+
+#: gui/HostsViewer.py:33
+msgid "ID"
+msgstr "ID"
+
+#: gui/HostsViewer.py:46
+msgid "Hosts Viewer"
+msgstr "Visualizador"
+
+#: gui/NodeNotebook.py:28
+msgid "Port"
+msgstr "Porta"
+
+#: gui/NodeNotebook.py:29
+msgid "Protocol"
+msgstr "Protocolo"
+
+#: gui/NodeNotebook.py:30
+#: gui/NodeNotebook.py:33
+msgid "State"
+msgstr "Estado"
+
+#: gui/NodeNotebook.py:31
+msgid "Service"
+msgstr "Serviço"
+
+#: gui/NodeNotebook.py:32
+msgid "Method"
+msgstr "Método"
+
+#: gui/NodeNotebook.py:33
+msgid "Count"
+msgstr "Total"
+
+#: gui/NodeNotebook.py:33
+msgid "Reasons"
+msgstr "Razões"
+
+#: gui/NodeNotebook.py:42
+msgid "Hostname"
+msgstr "Nome"
+
+#: gui/NodeNotebook.py:42
+msgid "IP"
+msgstr "IP"
+
+#: gui/NodeNotebook.py:42
+msgid "RTT"
+msgstr "RTT"
+
+#: gui/NodeNotebook.py:42
+msgid "TTL"
+msgstr "TTL"
+
+#: gui/NodeNotebook.py:44
+msgid "Traceroute on port <b>%s</b> totalized <b>%d</b> known hops."
+msgstr "Traçado da rota na porta <b>%s</b> totalizando <b>%d</b> máquinas conhecidas."
+
+#: gui/NodeNotebook.py:48
+msgid "No traceroute information available."
+msgstr "Informação sobre traçado de rota indisponível."
+
+#: gui/NodeNotebook.py:55
+msgid "DB Line"
+msgstr "Linha na BD"
+
+#: gui/NodeNotebook.py:55
+msgid "Name"
+msgstr "Nome"
+
+#: gui/NodeNotebook.py:55
+#: gui/NodeNotebook.py:56
+msgid "%"
+msgstr "%"
+
+#: gui/NodeNotebook.py:56
+msgid "Family"
+msgstr "Família"
+
+#: gui/NodeNotebook.py:56
+msgid "Type"
+msgstr "Tipo"
+
+#: gui/NodeNotebook.py:56
+msgid "Vendor"
+msgstr "Fabricante"
+
+#: gui/NodeNotebook.py:56
+msgid "Version"
+msgstr "Versão"
+
+#: gui/NodeNotebook.py:60
+msgid "<b>*</b> TCP sequence <i>index</i> equal to %d and <i>difficulty</i> is \"%s\"."
+msgstr "<b>*</b> <i>Índice</i> da sequência TCP igual à %d e <i>dificuldade</i> \"%s\"."
+
+#: gui/NodeNotebook.py:89
+msgid "General"
+msgstr "Geral"
+
+#: gui/NodeNotebook.py:90
+msgid "Services"
+msgstr "Serviços"
+
+#: gui/NodeNotebook.py:91
+msgid "Traceroute"
+msgstr "Traçado da rota"
+
+#: gui/NodeNotebook.py:135
+msgid "Ports (%s)"
+msgstr "Portas (%s)"
+
+#: gui/NodeNotebook.py:157
+#: gui/NodeNotebook.py:701
+msgid "<unknown>"
+msgstr "<desconhecido>"
+
+#: gui/NodeNotebook.py:163
+msgid "<none>"
+msgstr "<nulo>"
+
+#: gui/NodeNotebook.py:188
+msgid "[%d] service: %s"
+msgstr "[%d] serviço: %s"
+
+#: gui/NodeNotebook.py:193
+#: gui/NodeNotebook.py:219
+msgid "<special field>"
+msgstr "<campo especial>"
+
+#: gui/NodeNotebook.py:209
+msgid "[%d] script: %s"
+msgstr "[%d] programa: %s"
+
+#: gui/NodeNotebook.py:298
+msgid "Extraports (%s)"
+msgstr "Portas extras (%s)"
+
+#: gui/NodeNotebook.py:305
+msgid "Special fields"
+msgstr "Campos especiais"
+
+#: gui/NodeNotebook.py:342
+msgid "General information"
+msgstr "Informação geral"
+
+#: gui/NodeNotebook.py:343
+msgid "Sequences"
+msgstr "Sequências"
+
+#: gui/NodeNotebook.py:344
+msgid "Operating System"
+msgstr "Sistema Operacional"
+
+#: gui/NodeNotebook.py:346
+msgid "No sequence information."
+msgstr "Informação sobre sequências indisponível."
+
+#: gui/NodeNotebook.py:347
+msgid "No OS information."
+msgstr "Sem informação sobre o SO."
+
+#: gui/NodeNotebook.py:352
+msgid "Address:"
+msgstr "Endereço:"
+
+#: gui/NodeNotebook.py:375
+msgid "Hostname:"
+msgstr "Nome:"
+
+#: gui/NodeNotebook.py:394
+msgid "Last boot:"
+msgstr "Inicialização"
+
+#: gui/NodeNotebook.py:399
+msgid "%s (%s seconds)."
+msgstr "%s (%s segundos)."
+
+#: gui/NodeNotebook.py:421
+#: gui/NodeNotebook.py:594
+msgid "Class"
+msgstr "Classe"
+
+#: gui/NodeNotebook.py:422
+msgid "Values"
+msgstr "Valores"
+
+#: gui/NodeNotebook.py:424
+msgid "TCP *"
+msgstr "TCP *"
+
+#: gui/NodeNotebook.py:425
+msgid "IP ID"
+msgstr "ID IP"
+
+#: gui/NodeNotebook.py:426
+msgid "TCP Timestamp"
+msgstr "Marca de tempo TCP"
+
+#: gui/NodeNotebook.py:543
+msgid "Match"
+msgstr "Classificação"
+
+#: gui/NodeNotebook.py:602
+msgid "Used ports:"
+msgstr "Portas usadas:"
+
+#: gui/NodeNotebook.py:626
+msgid "Fingerprint"
+msgstr "Assinatura"
+
+#: gui/ScanDialog.py:57
+msgid "Nmap as backend"
+msgstr "Nmap como base"
+
+#: gui/ScanDialog.py:94
+msgid "Scan form:"
+msgstr "Formulário"
+
+#: gui/Toolbar.py:60
+msgid "Hosts viewer"
+msgstr "Visualizador"
+
+#: gui/Toolbar.py:124
+msgid "Open"
+msgstr "Abrir"
+
+#: gui/Toolbar.py:131
+msgid "Tools"
+msgstr "Ferramentas"
+
+#: gui/Toolbar.py:137
+msgid "Controls"
+msgstr "Controles"
+
+#: gui/Toolbar.py:140
+msgid "Show control panel"
+msgstr "Mostrar painel de controles"
+
+#: gui/Toolbar.py:144
+msgid "Fisheye"
+msgstr "Lente"
+
+#: gui/Toolbar.py:147
+msgid "Enable fisheye"
+msgstr "Abilitar lente"
+
+#: gui/Toolbar.py:151
+msgid "Fullscreen"
+msgstr "Tela cheia"
+
+#: gui/Toolbar.py:154
+msgid "Toggle fullscreen"
+msgstr "Alternar tela cheia"
+
+#: gui/Toolbar.py:157
+msgid "About"
+msgstr "Sobre"
+
+#: gui/Toolbar.py:160
+msgid "About RadialNet"
+msgstr "Sobre o RadialNet"
+
+#: gui/Toolbar.py:219
+msgid "Open a Nmap XML file"
+msgstr "Abrir um arquivo XML do Nmap"
+
+#: radialnet.pyw:33
+msgid ""
+"Description: Show RadialNet application from Nmap XML file. It's good for\n"
+"topology visualization if Nmap XML input file has traceroute information. If\n"
+"you don't know what is this, see Nmap documentation (man nmap). You can pass\n"
+"the Nmap XML file by command line or open it later.\n"
+"\n"
+"Usage: radialnet.pyw [<options>] [<files>]\n"
+"\n"
+"Options:\n"
+"\n"
+"    -h, --help      Show this help text.\n"
+"\n"
+"Suggestions or bug reports can be send to ignotus21_at_gmail_dot_com."
+msgstr ""
+"Descrição: Executar RadialNet a partir de um arquivo XML do Nmap. É\n"
+"recomendado abilitar traçado de rotas no Nmap. Se você não sabe do que se\n"
+"trata consulte a documentação do Nmap (man nmap). Você pode passar o arquivo\n"
+"XML como argumento ou abri-lo depois.\n"
+"\n"
+"Uso: radialnet.pyw [<opções>] [<arquivos>]\n"
+"Opções:\n"
+"\n"
+"   -h, --help      Mostra este texto.\n"
+"\n"
+"Sugestões ou relatório de erros podem ser enviados para ignotus_at_gmail_com."
+
+#: radialnet.pyw:55
+msgid "Running without psyco (http://psyco.sourceforge.net/)."
+msgstr "Executando sem o psyco (http://psyco.sourceforge.net/)."
+

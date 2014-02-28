@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
+# vim: set encoding=utf-8 :
 
-# Copyright (C) 2007 Insecure.Com LLC.
+# Copyright (C) 2007-2014 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,25 +23,27 @@ import os
 import sys
 import gtk
 
+import core.I18n
+
+from core.I18n import _
 from core.ArgvHandle import *
 from gui.Application import *
 
 
-USAGE = """\
-Description: Show RadialNet application from Nmap XML file. It's better if Nmap
-XML input file has traceroute information. If you don't know what is this, see
-Nmap documentation. You can pass the Nmap xml file by command line or open it
-later.
+USAGE = _("""\
+Description: Show RadialNet application from Nmap XML file. It's good for
+topology visualization if Nmap XML input file has traceroute information. If
+you don't know what is this, see Nmap documentation (man nmap). You can pass
+the Nmap XML file by command line or open it later.
 
-Usage: radialnet.py [options]
+Usage: radialnet.pyw [<options>] [<files>]
 
 Options:
 
     -h, --help      Show this help text.
-    -f <file>       Use <file> as Nmap XML input.
 
-Suggestions or bug reports can be send to ignotus21_at_gmail_dot_com.\
-"""
+Suggestions or bug reports can be send to <ignotus21@gmail.com>.\
+""")
 
 # check for psyco
 try:
@@ -50,12 +52,13 @@ try:
     psyco.full()
 
 except ImportError:
-    print 'Running without psyco (http://psyco.sourceforge.net/).'
+    print _("Running without psyco (http://psyco.sourceforge.net/).")
 
 
 
 if __name__ == '__main__':
-
+    """
+    """
     argvh = ArgvHandle(sys.argv)
 
     if argvh.has_option('-h') or argvh.has_option('--help'):
@@ -65,16 +68,9 @@ if __name__ == '__main__':
 
     application = Application()
 
-    if argvh.has_option('-f'):
+    files = argvh.get_tail()
 
-        file = argvh.get_option('-f')
-
-        if file == None:
-
-            print USAGE
-            sys.exit(0)
-
-        else:
-            application.parse_nmap_xml_file(os.path.abspath(file))
+    for file in files:
+        application.parse_nmap_xml_file(os.path.abspath(file))
 
     application.start()

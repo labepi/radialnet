@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2008 Insecure.Com LLC.
+# Copyright (C) 2008 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,7 +49,23 @@ class ArgvHandle:
         return option in self.__argv
 
 
-    def get_last_value(self):
+    def get_tail(self):
+        """
+        """
+        tail = []
+
+        for i in range(len(self.__argv) - 1, 0, -1):
+
+            if self.__argv[i - 1][0] != '-' and self.__argv[i][0] != '-':
+                tail.append(self.__argv[i])
+
+            else:
+                break
+
+        return tail
+
+
+    def get_last_values(self):
         """
         """
         return self.__argv[-1]

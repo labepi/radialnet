@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2008 Insecure.Com LLC.
+# Copyright (C) 2008 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,16 +24,14 @@ import gobject
 
 import bestwidgets as bw
 
+from core.I18n import _
 from gui.NodeNotebook import NodeNotebook
 from util.misc import ipv4_compare
 
 
 HOSTS_COLORS = ['#d5ffd5', '#ffffd5', '#ffd5d5']
-
-HOSTS_HEADER = ['ID', '#', 'Hosts']
-
+HOSTS_HEADER = [_("ID"), _("#"), _("Hosts")]
 DIMENSION = (700, 400)
-
 IP_RE = '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$'
 
 
@@ -45,8 +43,10 @@ class HostsViewer(bw.BWMainWindow):
         """
         """
         bw.BWMainWindow.__init__(self)
-        self.set_title('Hosts Viewer')
+        self.set_title(_("Hosts Viewer"))
         self.set_default_size(DIMENSION[0], DIMENSION[1])
+
+        self.set_position(gtk.WIN_POS_CENTER)
 
         self.__nodes = nodes
         self.__view = None

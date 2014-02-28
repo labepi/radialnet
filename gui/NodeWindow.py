@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2007, 2008 Insecure.Com LLC.
+# Copyright (C) 2007-2008 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import gtk
 import pango
 
 import bestwidgets as bw
-import util.drawing as drawing
+import util.misc as misc
 
 from gui.Image import Application
 from gui.NodeNotebook import NodeNotebook
@@ -90,7 +90,7 @@ class NodeWindow(bw.BWWindow):
         self.__color_image.set_from_file(self.__icon.get_icon('border'))
         self.__color_box.add(self.__color_image)
         self.__color_box.set_size_request(15, 15)
-        r, g, b = drawing.cairo_to_gdk_color(self.__node.get_draw_info('color'))
+        r, g, b = misc.cairo_to_gdk_color(self.__node.get_draw_info('color'))
         self.__color_box.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(r, g, b))
 
         # title with the node ip and hostname

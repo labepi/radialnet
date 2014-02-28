@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2007, 2008 Insecure.Com LLC.
+# Copyright (C) 2007-2008 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +23,17 @@ from gui.RadialNet import *
 from util.geometry import *
 import math
 
+
+
+def cairo_to_gdk_color(color):
+    """
+    """
+    new_color = range(len(color))
+
+    for i in range(len(color)):
+        new_color[i] = int(color[i] * 65535)
+
+    return new_color
 
 
 def ipv4_compare(ip1, ip2):

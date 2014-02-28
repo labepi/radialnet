@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2007, 2008 Insecure.Com LLC.
+# Copyright (C) 2007-2008 Joao Paulo de Souza Medeiros
 #
-# Author: JoÃ£o Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ import time
 import copy
 import gobject
 
-import util.drawing as drawing
 import util.geometry as geometry
 import util.misc as misc
 
@@ -1663,7 +1662,9 @@ class RadialNet(gtk.DrawingArea):
 
             for s_node in nodes:
             
-                if ring < s_node.get_draw_info('ring'): break
+                if ring < s_node.get_draw_info('ring'):
+                    break
+
                 count +=1
 
             nodes.insert(count, node)

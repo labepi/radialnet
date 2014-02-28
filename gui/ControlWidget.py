@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2007, 2008 Insecure.Com LLC.
+# Copyright (C) 2007-2008 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@ import math
 import gobject
 
 import bestwidgets as bw
-import util.drawing as drawing
 import util.geometry as geometry
 
+from core.I18n import _
 from core.Coordinate import PolarCoordinate
 from gui.RadialNet import *
 
@@ -77,7 +77,7 @@ class ControlAction(bw.BWExpander):
     def __init__(self, radialnet):
         """
         """
-        bw.BWExpander.__init__(self, 'Action')
+        bw.BWExpander.__init__(self, _("Action"))
         self.set_expanded(True)
 
         self.radialnet = radialnet
@@ -95,34 +95,34 @@ class ControlAction(bw.BWExpander):
         self.__tooltips = gtk.Tooltips()
 
         self.__jump_to = gtk.RadioToolButton(None, gtk.STOCK_JUMP_TO)
-        self.__jump_to.set_tooltip(self.__tooltips, 'Change focus')
+        self.__jump_to.set_tooltip(self.__tooltips, _("Change focus"))
         self.__jump_to.connect('toggled',
                                self.__change_pointer,
                                POINTER_JUMP_TO)
 
         self.__info = gtk.RadioToolButton(self.__jump_to, gtk.STOCK_INFO)
-        self.__info.set_tooltip(self.__tooltips, 'Show information')
+        self.__info.set_tooltip(self.__tooltips, _("Show information"))
         self.__info.connect('toggled',
                             self.__change_pointer,
                             POINTER_INFO)
 
         self.__group = gtk.RadioToolButton(self.__jump_to, gtk.STOCK_ADD)
-        self.__group.set_tooltip(self.__tooltips, 'Group children')
+        self.__group.set_tooltip(self.__tooltips, _("Group children"))
         self.__group.connect('toggled',
                              self.__change_pointer,
                              POINTER_GROUP)
 
         self.__region = gtk.RadioToolButton(self.__jump_to,
                                             gtk.STOCK_SELECT_COLOR)
-        self.__region.set_tooltip(self.__tooltips, 'Fill region')
+        self.__region.set_tooltip(self.__tooltips, _("Fill region"))
         self.__region.connect('toggled',
                               self.__change_pointer,
                               POINTER_FILL)
 
         self.__region_color = gtk.combo_box_new_text()
-        self.__region_color.append_text('Red')
-        self.__region_color.append_text('Yellow')
-        self.__region_color.append_text('Green')
+        self.__region_color.append_text(_("Red"))
+        self.__region_color.append_text(_("Yellow"))
+        self.__region_color.append_text(_("Green"))
         self.__region_color.connect('changed', self.__change_region)
         self.__region_color.set_active(self.radialnet.get_region_color())
 
@@ -452,7 +452,7 @@ class ControlFisheye(bw.BWVBox):
         """
         self.__params = bw.BWHBox()
 
-        self.__fisheye_label = gtk.Label('<b>Fisheye</b> on ring')
+        self.__fisheye_label = gtk.Label(_("<b>Fisheye</b> on ring"))
         self.__fisheye_label.set_use_markup(True)
 
         self.__ring = gtk.Adjustment(0, 0, self.__ring_max_value, 0.01, 0.01)
@@ -467,12 +467,12 @@ class ControlFisheye(bw.BWVBox):
         self.__ring_scale.set_draw_value(False)
         self.__ring_scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
 
-        self.__interest_label = gtk.Label('with interest factor')
+        self.__interest_label = gtk.Label(_("with interest factor"))
         self.__interest = gtk.Adjustment(0, 0, 10, 0.01)
         self.__interest_spin = gtk.SpinButton(self.__interest)
         self.__interest_spin.set_digits(2)
 
-        self.__spread_label = gtk.Label('and spread factor')
+        self.__spread_label = gtk.Label(_("and spread factor"))
         self.__spread = gtk.Adjustment(0, -1.0, 1.0, 0.01, 0.01)
         self.__spread_spin = gtk.SpinButton(self.__spread)
         self.__spread_spin.set_digits(2)
@@ -584,7 +584,7 @@ class ControlInterpolation(bw.BWExpander):
     def __init__(self, radialnet):
         """
         """
-        bw.BWExpander.__init__(self, 'Interpolation')
+        bw.BWExpander.__init__(self, _("Interpolation"))
 
         self.radialnet = radialnet
 
@@ -596,8 +596,9 @@ class ControlInterpolation(bw.BWExpander):
         """
         self.__vbox = bw.BWVBox()
 
-        self.__cartesian_radio = gtk.RadioButton(None, 'Cartesian')
-        self.__polar_radio = gtk.RadioButton(self.__cartesian_radio, 'Polar')
+        self.__cartesian_radio = gtk.RadioButton(None, _("Cartesian"))
+        self.__polar_radio = gtk.RadioButton(self.__cartesian_radio,
+                                             _("Polar"))
         self.__cartesian_radio.connect('toggled',
                                        self.__change_system,
                                        INTERPOLATION_CARTESIAN)
@@ -610,7 +611,7 @@ class ControlInterpolation(bw.BWExpander):
         self.__system_box.bw_pack_start_noexpand_nofill(self.__cartesian_radio)
 
         self.__frames_box = bw.BWHBox()
-        self.__frames_label = gtk.Label('Frames')
+        self.__frames_label = gtk.Label(_("Frames"))
         self.__frames_label.set_alignment(0.0, 0.5)
         self.__frames = gtk.Adjustment(self.radialnet.get_number_of_frames(),
                                        1,
@@ -671,7 +672,7 @@ class ControlLayout(bw.BWExpander):
     def __init__(self, radialnet):
         """
         """
-        bw.BWExpander.__init__(self, 'Layout')
+        bw.BWExpander.__init__(self, _("Layout"))
 
         self.radialnet = radialnet
 
@@ -684,8 +685,8 @@ class ControlLayout(bw.BWExpander):
         self.__hbox = bw.BWHBox()
 
         self.__layout = gtk.combo_box_new_text()
-        self.__layout.append_text('Symmetric')
-        self.__layout.append_text('Weighted')
+        self.__layout.append_text(_("Symmetric"))
+        self.__layout.append_text(_("Weighted"))
         self.__layout.set_active(self.radialnet.get_layout())
         self.__layout.connect('changed', self.__change_layout)
         self.__force = gtk.ToolButton(gtk.STOCK_REFRESH)
@@ -745,11 +746,11 @@ class ControlRingGap(bw.BWVBox):
     def __create_widgets(self):
         """
         """
-        self.__radius = ControlVariable('Ring gap',
+        self.__radius = ControlVariable(_("Ring gap"),
                                         self.radialnet.get_ring_gap,
                                         self.radialnet.set_ring_gap)
 
-        self.__label = gtk.Label('Lower ring gap')
+        self.__label = gtk.Label(_("Lower ring gap"))
         self.__label.set_alignment(0.0, 0.5)
         self.__adjustment = gtk.Adjustment(self.radialnet.get_min_ring_gap(),
                                            0,
@@ -796,13 +797,13 @@ class ControlOptions(bw.BWScrolledWindow):
         self.__liststore = gtk.ListStore(gobject.TYPE_BOOLEAN,
                                          gobject.TYPE_STRING)
 
-        self.__liststore.append([None, OPTIONS[0]])
-        self.__liststore.append([None, OPTIONS[1]])
-        self.__liststore.append([None, OPTIONS[2]])
-        self.__liststore.append([None, OPTIONS[3]])
-        self.__liststore.append([None, OPTIONS[4]])
-        self.__liststore.append([None, OPTIONS[5]])
-        self.__liststore.append([None, OPTIONS[6]])
+        self.__liststore.append([None, _("address")])     # address
+        self.__liststore.append([None, _("hostname")])    # hostname
+        self.__liststore.append([None, _("icon")])        # icon
+        self.__liststore.append([None, _("latency")])     # latency
+        self.__liststore.append([None, _("ring")])        # ring
+        self.__liststore.append([None, _("region")])      # region
+        self.__liststore.append([None, _("slow in/out")]) # slow in/out
 
         self.__cell_toggle = gtk.CellRendererToggle()
         self.__cell_toggle.set_property('activatable', True)
@@ -815,7 +816,7 @@ class ControlOptions(bw.BWScrolledWindow):
 
         self.__cell_text = gtk.CellRendererText()
 
-        self.__column_text = gtk.TreeViewColumn('Enable',
+        self.__column_text = gtk.TreeViewColumn(_("Enable"),
                                                 self.__cell_text,
                                                 text=1)
 
@@ -881,7 +882,7 @@ class ControlView(bw.BWExpander):
     def __init__(self, radialnet):
         """
         """
-        bw.BWExpander.__init__(self, 'View')
+        bw.BWExpander.__init__(self, _("View"))
         self.set_expanded(True)
 
         self.radialnet = radialnet
@@ -894,7 +895,7 @@ class ControlView(bw.BWExpander):
         """
         self.__vbox = bw.BWVBox(spacing=0)
 
-        self.__zoom = ControlVariable('Zoom',
+        self.__zoom = ControlVariable(_("Zoom"),
                                       self.radialnet.get_zoom,
                                       self.radialnet.set_zoom)
 
@@ -1128,7 +1129,7 @@ class ControlNavigation(gtk.DrawingArea):
         # draw text
         self.context.set_font_size(10)
         self.context.move_to(xc - 49, yc - 48)
-        self.context.show_text("Navigation")
+        self.context.show_text(_("Navigation"))
 
         width = self.context.text_extents(str(int(t)))[2]
         self.context.move_to(xc + 49 - width - 2, yc - 48)

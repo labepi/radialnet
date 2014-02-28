@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2008 Insecure.Com LLC.
+# Copyright (C) 2008 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ from core.Path import path
 
 
 INFO = {'name' :     'RadialNet',
-        'version':   '0.44',
+        'version':   '0.45',
         'website':   'http://www.dca.ufrn.br/~joaomedeiros/radialnet/',
         'authors':   ['João Paulo de Souza Medeiros'],
         'license':   file(os.path.join(path.get_dirbase(), 'LICENSE')).read(),
-        'copyright': 'Copyright (C) 2007, 2008 Insecure.Com LLC'}
+        'copyright': 'Copyright (C) 2007-2014 Joao Paulo de Souza Medeiros'}

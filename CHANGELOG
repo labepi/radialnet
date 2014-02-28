@@ -1,7 +1,23 @@
-RadialNet current
------------------
+RadialNet 0.45
+--------------
 
 o Moved to GitHub (github.com/labepi/radialnet).
+
+o Looks like that Nmap xml output for traceroute don't include protocol
+  attibute anymore, so it is removed from traceroute view.
+
+o Add auto-scroll support into BWTextView and BWTextEditor.
+
+o Add a scan dialog that support Nmap scans and allow to load results into
+  RadialNet.
+
+o Hide statusbar grip in fullscreen mode.
+
+o Improve core.ArgvHandle with get_tail() method.
+
+o Moved cairo_to_gdk_color() from drawing.py to misc.py, and delete the first.
+
+o Copyright and authors description standardization.
 
 
 RadialNet 0.44

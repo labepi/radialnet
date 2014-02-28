@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2007 Insecure.Com LLC.
+# Copyright (C) 2007 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -351,7 +351,7 @@ def make_graph_from_nmap_parser(parser):
     nodes.append(NetNode(0))
     node = nodes[-1]
 
-    node.set_info({'ip':'127.0.0.1/8', 'hostname':'localhost'})
+    node.set_info({'ip':'127.0.0.1/8', 'hostname':'localnet'})
     node.set_draw_info({'color':(0,0,0), 'radius':NONE_RADIUS})
 
     # for each host in hosts just mount the graph

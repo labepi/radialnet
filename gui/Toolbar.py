@@ -1,8 +1,8 @@
 # vim: set fileencoding=utf-8 :
 
-# Copyright (C) 2008 Insecure.Com LLC.
+# Copyright (C) 2008 Joao Paulo de Souza Medeiros
 #
-# Author: João Paulo de Souza Medeiros <ignotus21@gmail.com>
+# Author(s): Joao Paulo de Souza Medeiros <ignotus21@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,8 +22,11 @@ import gtk
 import gobject
 
 import bestwidgets as bw
+
+from core.I18n import _
 from gui.Dialogs import AboutDialog
 from gui.HostsViewer import HostsViewer
+from gui.ScanDialog import ScanDialog
 
 
 SHOW = True
@@ -54,7 +57,7 @@ class ToolsMenu(gtk.Menu):
     def __create_items(self):
         """
         """
-        self.__hosts = gtk.ImageMenuItem('Hosts viewer')
+        self.__hosts = gtk.ImageMenuItem(_("Hosts viewer"))
         self.__hosts.connect("activate", self.__hosts_viewer_callback)
         self.__hosts_image = gtk.Image()
         self.__hosts_image.set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
@@ -110,60 +113,67 @@ class Toolbar(gtk.Toolbar):
     def __create_widgets(self):
         """
         """
-        self.__tooltips = gtk.Tooltips()
+        self.__scan = gtk.ToolButton(gtk.STOCK_FIND)
+        self.__scan.set_label(_("Scan"))
+        self.__scan.set_tooltip_text(_("Open scan window"))
+        self.__scan.set_is_important(True)
+        self.__scan.connect('clicked', self.__scan_callback)
 
         self.__open = gtk.ToolButton(gtk.STOCK_OPEN)
-        self.__open.set_label('Open')
+        self.__open.set_label(_("Open"))
+        self.__open.set_tooltip_text(_("Open a file"))
         self.__open.set_is_important(True)
         self.__open.connect('clicked', self.__open_callback)
 
         self.__tools_menu = ToolsMenu(self.radialnet)
 
         self.__tools_button = gtk.MenuToolButton(gtk.STOCK_PREFERENCES)
-        self.__tools_button.set_label('Tools')
+        self.__tools_button.set_label(_("Tools"))
+        self.__tools_button.set_tooltip_text(_("Show tools menu"))
         self.__tools_button.set_is_important(True)
         self.__tools_button.set_menu(self.__tools_menu)
         self.__tools_button.connect('clicked', self.__tools_callback)
 
         self.__control = gtk.ToggleToolButton(gtk.STOCK_PROPERTIES)
-        self.__control.set_label('Controls')
+        self.__control.set_label(_("Controls"))
         self.__control.set_is_important(True)
         self.__control.connect('clicked', self.__control_callback)
-        self.__control.set_tooltip(self.__tooltips, 'Show control panel')
+        self.__control.set_tooltip_text(_("Show control panel"))
         self.__control.set_active(False)
 
         self.__fisheye = gtk.ToggleToolButton(gtk.STOCK_ZOOM_FIT)
-        self.__fisheye.set_label('Fisheye')
+        self.__fisheye.set_label(_("Fisheye"))
         self.__fisheye.set_is_important(True)
         self.__fisheye.connect('clicked', self.__fisheye_callback)
-        self.__fisheye.set_tooltip(self.__tooltips, 'Enable fisheye')
+        self.__fisheye.set_tooltip_text(_("Enable fisheye"))
         self.__fisheye.set_active(False)
 
         self.__fullscreen = gtk.ToggleToolButton(gtk.STOCK_FULLSCREEN)
-        self.__fullscreen.set_label('Fullscreen')
+        self.__fullscreen.set_label(_("Fullscreen"))
         self.__fullscreen.set_is_important(True)
         self.__fullscreen.connect('clicked', self.__fullscreen_callback)
-        self.__fullscreen.set_tooltip(self.__tooltips, 'Toggle fullscreen')
+        self.__fullscreen.set_tooltip_text(_("Toggle fullscreen"))
 
         self.__about = gtk.ToolButton(gtk.STOCK_ABOUT)
-        self.__about.set_label('About')
+        self.__about.set_label(_("About"))
         self.__about.set_is_important(True)
         self.__about.connect('clicked', self.__about_callback)
-        self.__about.set_tooltip(self.__tooltips, 'About RadialNet')
+        self.__about.set_tooltip_text(_("About RadialNet"))
 
         self.__separator = gtk.SeparatorToolItem()
         self.__expander = gtk.SeparatorToolItem()
         self.__expander.set_expand(True)
         self.__expander.set_draw(False)
 
-        self.insert(self.__open,         0)
-        self.insert(self.__separator,    1)
-        self.insert(self.__tools_button, 2)
-        self.insert(self.__expander,     3)
-        self.insert(self.__control,      4)
-        self.insert(self.__fisheye,      5)
-        self.insert(self.__fullscreen,   6)
-        self.insert(self.__about,        7)
+        self.insert(self.__scan,         0)
+        self.insert(self.__open,         1)
+        self.insert(self.__separator,    2)
+        self.insert(self.__tools_button, 3)
+        self.insert(self.__expander,     4)
+        self.insert(self.__control,      5)
+        self.insert(self.__fisheye,      6)
+        self.insert(self.__fullscreen,   7)
+        self.insert(self.__about,        8)
 
         gobject.timeout_add(REFRESH_RATE, self.__update)
 
@@ -195,10 +205,19 @@ class Toolbar(gtk.Toolbar):
         return True
 
 
+    def __scan_callback(self, widget=None):
+        """
+        """
+        scan = ScanDialog(self.__window)
+
+        scan.show_all()
+        scan.set_keep_above(True)
+
+
     def __open_callback(self, widget=None):
         """
         """
-        self.__chooser = gtk.FileChooserDialog('Open a Nmap XML file',
+        self.__chooser = gtk.FileChooserDialog(_("Open a Nmap XML file"),
                                                None,
                                                gtk.FILE_CHOOSER_ACTION_OPEN,
                                                FILE_CHOOSER_BUTTONS)
@@ -261,8 +280,8 @@ class Toolbar(gtk.Toolbar):
         """
         """
         if self.__fullscreen.get_active():
-            self.__window.fullscreen()
+            self.__window.set_fullscreen_state(True)
 
         else:
-            self.__window.unfullscreen()
+            self.__window.set_fullscreen_state(False)
 
