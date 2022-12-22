@@ -62,7 +62,7 @@ class HostsViewer(bw.BWMainWindow):
         self.__panel.set_border_width(6)
 
         self.__list = HostsList(self, self.__nodes)
-        self.__view = NodeNotebook(self.__nodes[0])
+        self.__view = bw.BWLabel()
 
         self.__panel.add1(self.__list)
         self.__panel.add2(self.__view)
@@ -75,7 +75,6 @@ class HostsViewer(bw.BWMainWindow):
     def change_notebook(self, node):
         """
         """
-        self.__panel.remove(self.__panel.get_child2())
         self.__view.destroy()
         self.__view = NodeNotebook(node)
         self.__panel.add2(self.__view)
@@ -156,7 +155,6 @@ class HostsList(Gtk.ScrolledWindow):
         self.add_with_viewport(self.__hosts_treeview)
 
         self.__hosts_treeview.set_cursor((0,))
-        #self.__cursor_callback(self.__hosts_treeview)
         self.__hosts_treeview.connect('cursor-changed', self.__cursor_callback)
 
 
