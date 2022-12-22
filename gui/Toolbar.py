@@ -18,8 +18,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-import gtk
-import gobject
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GObject
 
 import bestwidgets as bw
 
@@ -32,22 +33,22 @@ from gui.ScanDialog import ScanDialog
 SHOW = True
 HIDE = False
 
-FILE_CHOOSER_BUTTONS = (gtk.STOCK_CANCEL,
-                        gtk.RESPONSE_CANCEL,
-                        gtk.STOCK_OPEN,
-                        gtk.RESPONSE_OK)
+FILE_CHOOSER_BUTTONS = (Gtk.STOCK_CANCEL,
+                        Gtk.ResponseType.CANCEL,
+                        Gtk.STOCK_OPEN,
+                        Gtk.ResponseType.OK)
 
 REFRESH_RATE = 500
 
 
 
-class ToolsMenu(gtk.Menu):
+class ToolsMenu(Gtk.Menu):
     """
     """
     def __init__(self, radialnet):
         """
         """
-        gtk.Menu.__init__(self)
+        Gtk.Menu.__init__(self)
 
         self.radialnet = radialnet
 
@@ -57,10 +58,12 @@ class ToolsMenu(gtk.Menu):
     def __create_items(self):
         """
         """
-        self.__hosts = gtk.ImageMenuItem(_("Hosts viewer"))
+        self.__hosts = Gtk.ImageMenuItem(_("Hosts viewer"))
         self.__hosts.connect("activate", self.__hosts_viewer_callback)
-        self.__hosts_image = gtk.Image()
-        self.__hosts_image.set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_MENU)
+        self.__hosts_image = Gtk.Image()
+        #self.__hosts_image.set_from_stock(Gtk.STOCK_INDEX, Gtk.ICON_SIZE_MENU)
+        self.__hosts_image.new_from_icon_name(Gtk.STOCK_INDEX,
+                                              Gtk.IconSize.MENU)
         self.__hosts.set_image(self.__hosts_image)
 
         self.append(self.__hosts)
@@ -89,15 +92,15 @@ class ToolsMenu(gtk.Menu):
 
 
 
-class Toolbar(gtk.Toolbar):
+class Toolbar(Gtk.Toolbar):
     """
     """
     def __init__(self, radialnet, window, control, fisheye):
         """
         """
-        gtk.Toolbar.__init__(self)
-        self.set_style(gtk.TOOLBAR_BOTH_HORIZ)
-        self.set_tooltips(True)
+        Gtk.Toolbar.__init__(self)
+        self.set_style(Gtk.ToolbarStyle.BOTH_HORIZ)
+        #self.set_tooltips(True)
 
         self.radialnet = radialnet
 
@@ -113,13 +116,13 @@ class Toolbar(gtk.Toolbar):
     def __create_widgets(self):
         """
         """
-        self.__scan = gtk.ToolButton(gtk.STOCK_FIND)
+        self.__scan = Gtk.ToolButton(Gtk.STOCK_FIND)
         self.__scan.set_label(_("Scan"))
         self.__scan.set_tooltip_text(_("Open scan window"))
         self.__scan.set_is_important(True)
         self.__scan.connect('clicked', self.__scan_callback)
 
-        self.__open = gtk.ToolButton(gtk.STOCK_OPEN)
+        self.__open = Gtk.ToolButton(Gtk.STOCK_OPEN)
         self.__open.set_label(_("Open"))
         self.__open.set_tooltip_text(_("Open a file"))
         self.__open.set_is_important(True)
@@ -127,41 +130,41 @@ class Toolbar(gtk.Toolbar):
 
         self.__tools_menu = ToolsMenu(self.radialnet)
 
-        self.__tools_button = gtk.MenuToolButton(gtk.STOCK_PREFERENCES)
+        self.__tools_button = Gtk.MenuToolButton(Gtk.STOCK_PREFERENCES)
         self.__tools_button.set_label(_("Tools"))
         self.__tools_button.set_tooltip_text(_("Show tools menu"))
         self.__tools_button.set_is_important(True)
         self.__tools_button.set_menu(self.__tools_menu)
         self.__tools_button.connect('clicked', self.__tools_callback)
 
-        self.__control = gtk.ToggleToolButton(gtk.STOCK_PROPERTIES)
+        self.__control = Gtk.ToggleToolButton(Gtk.STOCK_PROPERTIES)
         self.__control.set_label(_("Controls"))
         self.__control.set_is_important(True)
         self.__control.connect('clicked', self.__control_callback)
         self.__control.set_tooltip_text(_("Show control panel"))
         self.__control.set_active(False)
 
-        self.__fisheye = gtk.ToggleToolButton(gtk.STOCK_ZOOM_FIT)
+        self.__fisheye = Gtk.ToggleToolButton(Gtk.STOCK_ZOOM_FIT)
         self.__fisheye.set_label(_("Fisheye"))
         self.__fisheye.set_is_important(True)
         self.__fisheye.connect('clicked', self.__fisheye_callback)
         self.__fisheye.set_tooltip_text(_("Enable fisheye"))
         self.__fisheye.set_active(False)
 
-        self.__fullscreen = gtk.ToggleToolButton(gtk.STOCK_FULLSCREEN)
+        self.__fullscreen = Gtk.ToggleToolButton(Gtk.STOCK_FULLSCREEN)
         self.__fullscreen.set_label(_("Fullscreen"))
         self.__fullscreen.set_is_important(True)
         self.__fullscreen.connect('clicked', self.__fullscreen_callback)
         self.__fullscreen.set_tooltip_text(_("Toggle fullscreen"))
 
-        self.__about = gtk.ToolButton(gtk.STOCK_ABOUT)
+        self.__about = Gtk.ToolButton(Gtk.STOCK_ABOUT)
         self.__about.set_label(_("About"))
         self.__about.set_is_important(True)
         self.__about.connect('clicked', self.__about_callback)
         self.__about.set_tooltip_text(_("About RadialNet"))
 
-        self.__separator = gtk.SeparatorToolItem()
-        self.__expander = gtk.SeparatorToolItem()
+        self.__separator = Gtk.SeparatorToolItem()
+        self.__expander = Gtk.SeparatorToolItem()
         self.__expander.set_expand(True)
         self.__expander.set_draw(False)
 
@@ -175,7 +178,7 @@ class Toolbar(gtk.Toolbar):
         self.insert(self.__fullscreen,   7)
         self.insert(self.__about,        8)
 
-        gobject.timeout_add(REFRESH_RATE, self.__update)
+        GObject.timeout_add(REFRESH_RATE, self.__update)
 
 
     def disable_controls(self):
@@ -217,13 +220,13 @@ class Toolbar(gtk.Toolbar):
     def __open_callback(self, widget=None):
         """
         """
-        self.__chooser = gtk.FileChooserDialog(_("Open a Nmap XML file"),
+        self.__chooser = Gtk.FileChooserDialog(_("Open a Nmap XML file"),
                                                None,
-                                               gtk.FILE_CHOOSER_ACTION_OPEN,
+                                               Gtk.FileChooserAction.OPEN,
                                                FILE_CHOOSER_BUTTONS)
         self.__chooser.set_keep_above(True)
 
-        if self.__chooser.run() == gtk.RESPONSE_OK:
+        if self.__chooser.run() == Gtk.ResponseType.OK:
             self.__window.parse_nmap_xml_file(self.__chooser.get_filename())
 
         self.__chooser.destroy()
@@ -232,7 +235,12 @@ class Toolbar(gtk.Toolbar):
     def __tools_callback(self, widget):
         """
         """
-        self.__tools_menu.popup(None, None, None, 1, 0)
+        self.__tools_menu.popup(None,
+                                None,
+                                None,
+                                1,
+                                0,
+                                Gtk.get_current_event_time())
 
 
     def __control_callback(self, widget=None):

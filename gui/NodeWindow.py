@@ -18,8 +18,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-import gtk
-import pango
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, Gdk, Pango
 
 import bestwidgets as bw
 import util.misc as misc
@@ -39,7 +40,7 @@ class NodeWindow(bw.BWWindow):
     def __init__(self, node, position, parent):
         """
         """
-        bw.BWWindow.__init__(self, gtk.WINDOW_POPUP)
+        bw.BWWindow.__init__(self, Gtk.WindowType.POPUP)
         self.set_decorated(False)
         self.set_keep_above(True)
         self.set_skip_taskbar_hint(True)
@@ -61,14 +62,14 @@ class NodeWindow(bw.BWWindow):
         self.connect('leave_notify_event', self.leave_notify)
         self.connect('motion_notify_event', self.motion_notify)
 
-        self.__title_font = pango.FontDescription('Monospace Bold')
+        self.__title_font = Pango.FontDescription('Monospace Bold')
 
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK |
-                        gtk.gdk.BUTTON_RELEASE_MASK |
-                        gtk.gdk.POINTER_MOTION_MASK |
-                        gtk.gdk.ENTER_NOTIFY |
-                        gtk.gdk.LEAVE_NOTIFY |
-                        gtk.gdk.POINTER_MOTION_HINT_MASK)
+        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK |
+                        Gdk.EventMask.BUTTON_RELEASE_MASK |
+                        Gdk.EventMask.POINTER_MOTION_MASK |
+                        Gdk.EventMask.ENTER_NOTIFY_MASK |
+                        Gdk.EventMask.LEAVE_NOTIFY_MASK |
+                        Gdk.EventMask.POINTER_MOTION_HINT_MASK)
 
         self.__icon = Application()
         self.__create_widgets()
@@ -85,13 +86,13 @@ class NodeWindow(bw.BWWindow):
         # create head elements
 
         # icon with node's score color
-        self.__color_box = gtk.EventBox()
-        self.__color_image = gtk.Image()
+        self.__color_box = Gtk.EventBox()
+        self.__color_image = Gtk.Image()
         self.__color_image.set_from_file(self.__icon.get_icon('border'))
         self.__color_box.add(self.__color_image)
         self.__color_box.set_size_request(15, 15)
         r, g, b = misc.cairo_to_gdk_color(self.__node.get_draw_info('color'))
-        self.__color_box.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(r, g, b))
+        self.__color_box.modify_bg(Gtk.StateType.NORMAL, Gdk.Color(r, g, b))
 
         # title with the node ip and hostname
         self.__title = ""
@@ -105,20 +106,20 @@ class NodeWindow(bw.BWWindow):
         self.__title_label.modify_font(self.__title_font)
 
         # icon to collapse window
-        self.__collapse_box = gtk.EventBox()
-        self.__collapse_img = gtk.Image()
+        self.__collapse_box = Gtk.EventBox()
+        self.__collapse_img = Gtk.Image()
         self.__collapse_img.set_from_file(self.__icon.get_icon('collapse'))
         self.__collapse_box.add(self.__collapse_img)
         self.__collapse_box.connect('button_press_event', self.collapse_window)
-        self.__collapse_box.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        self.__collapse_box.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
 
         # icon to close window
-        self.__close_box = gtk.EventBox()
-        self.__close_img = gtk.Image()
+        self.__close_box = Gtk.EventBox()
+        self.__close_img = Gtk.Image()
         self.__close_img.set_from_file(self.__icon.get_icon('close'))
         self.__close_box.add(self.__close_img)
         self.__close_box.connect('button_press_event', self.close_window)
-        self.__close_box.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        self.__close_box.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
 
         # packing head elements
         self.__head.bw_pack_start_noexpand_nofill(self.__color_box)
@@ -216,9 +217,9 @@ class NodeWindow(bw.BWWindow):
         """
         self.__node.set_draw_info({'over':True})
 
-        x, y, button_state = event.window.get_pointer()
+        window, x, y, button_state = event.window.get_pointer()
 
-        if button_state & gtk.gdk.BUTTON1_MASK and self.__pressed:
+        if button_state & Gdk.ModifierType.BUTTON1_MASK and self.__pressed:
 
             xw, yw = event.window.get_root_origin()
             xd, yd = self.__button_press_position

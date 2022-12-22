@@ -123,7 +123,8 @@ def set_node_info(node, host):
         xml_osmatches = xml_os.search_children('osmatch')
         xml_fingerprint = xml_os.search_children('osfingerprint', True)
 
-        os['fingerprint'] = xml_fingerprint.get_attr('fingerprint')
+        if xml_fingerprint:
+            os['fingerprint'] = xml_fingerprint.get_attr('fingerprint')
 
         if len(xml_osclasses) > 0:
 
@@ -444,5 +445,3 @@ def make_graph_from_nmap_parser(parser):
     graph.set_main_node_by_id(0)
 
     return graph
-
-

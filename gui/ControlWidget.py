@@ -18,9 +18,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, Gdk, GObject
+
 import math
-import gobject
 
 import bestwidgets as bw
 import util.geometry as geometry
@@ -92,34 +94,34 @@ class ControlAction(bw.BWExpander):
         self.__tbox.bw_set_spacing(0)
         self.__vbox = bw.BWVBox()
 
-        self.__tooltips = gtk.Tooltips()
-
-        self.__jump_to = gtk.RadioToolButton(None, gtk.STOCK_JUMP_TO)
-        self.__jump_to.set_tooltip(self.__tooltips, _("Change focus"))
+        self.__jump_to = Gtk.RadioToolButton(stock_id=Gtk.STOCK_JUMP_TO)
+        self.__jump_to.set_tooltip_text(_("Change focus"))
         self.__jump_to.connect('toggled',
                                self.__change_pointer,
                                POINTER_JUMP_TO)
 
-        self.__info = gtk.RadioToolButton(self.__jump_to, gtk.STOCK_INFO)
-        self.__info.set_tooltip(self.__tooltips, _("Show information"))
+        self.__info = Gtk.RadioToolButton(group=self.__jump_to,
+                                          stock_id=Gtk.STOCK_INFO)
+        self.__info.set_tooltip_text(_("Show information"))
         self.__info.connect('toggled',
                             self.__change_pointer,
                             POINTER_INFO)
 
-        self.__group = gtk.RadioToolButton(self.__jump_to, gtk.STOCK_ADD)
-        self.__group.set_tooltip(self.__tooltips, _("Group children"))
+        self.__group = Gtk.RadioToolButton(group=self.__jump_to,
+                                           stock_id=Gtk.STOCK_ADD)
+        self.__group.set_tooltip_text(_("Group children"))
         self.__group.connect('toggled',
                              self.__change_pointer,
                              POINTER_GROUP)
 
-        self.__region = gtk.RadioToolButton(self.__jump_to,
-                                            gtk.STOCK_SELECT_COLOR)
-        self.__region.set_tooltip(self.__tooltips, _("Fill region"))
+        self.__region = Gtk.RadioToolButton(group=self.__jump_to,
+                                            stock_id=Gtk.STOCK_SELECT_COLOR)
+        self.__region.set_tooltip_text(_("Fill region"))
         self.__region.connect('toggled',
                               self.__change_pointer,
                               POINTER_FILL)
 
-        self.__region_color = gtk.combo_box_new_text()
+        self.__region_color = Gtk.ComboBoxText()
         self.__region_color.append_text(_("Red"))
         self.__region_color.append_text(_("Yellow"))
         self.__region_color.append_text(_("Green"))
@@ -160,13 +162,13 @@ class ControlAction(bw.BWExpander):
 
 
 
-class ControlVariableWidget(gtk.DrawingArea):
+class ControlVariableWidget(Gtk.DrawingArea):
     """
     """
     def __init__(self, name, value, update, increment=1):
         """
         """
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
 
         self.__variable_name = name
         self.__value = value
@@ -181,18 +183,18 @@ class ControlVariableWidget(gtk.DrawingArea):
 
         self.__last_value = self.__value()
 
-        self.connect('expose_event', self.expose)
+        self.connect('draw', self.expose)
         self.connect('button_press_event', self.button_press)
         self.connect('button_release_event', self.button_release)
         self.connect('motion_notify_event', self.motion_notify)
 
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK |
-                        gtk.gdk.BUTTON_RELEASE_MASK |
-                        gtk.gdk.MOTION_NOTIFY |
-                        gtk.gdk.POINTER_MOTION_HINT_MASK |
-                        gtk.gdk.POINTER_MOTION_MASK)
+        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK |
+                        Gdk.EventMask.BUTTON_RELEASE_MASK |
+                        #Gtk.gdk.MOTION_NOTIFY |
+                        Gdk.EventMask.POINTER_MOTION_HINT_MASK |
+                        Gdk.EventMask.POINTER_MOTION_MASK)
 
-        gobject.timeout_add(REFRESH_RATE, self.verify_value)
+        GObject.timeout_add(REFRESH_RATE, self.verify_value)
 
 
     def verify_value(self):
@@ -214,7 +216,7 @@ class ControlVariableWidget(gtk.DrawingArea):
 
         if self.__button_is_clicked(pointer) and event.button == 1:
 
-            event.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+            event.window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
             self.__active_increment = True
             self.__increment_value()
 
@@ -222,7 +224,7 @@ class ControlVariableWidget(gtk.DrawingArea):
     def button_release(self, widget, event):
         """
         """
-        event.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+        event.window.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
 
         self.__active_increment = False
         self.__pointer_position = 0
@@ -251,19 +253,19 @@ class ControlVariableWidget(gtk.DrawingArea):
         self.queue_draw()
 
 
-    def expose(self, widget, event):
+    def expose(self, widget, context):
         """
         Drawing callback
         @type  widget: GtkWidget
         @param widget: Gtk widget superclass
-        @type  event: GtkEvent
-        @param event: Gtk event of widget
+        @type  context: GtkEvent
+        @param context: cairo_t context
         @rtype: boolean
         @return: Indicator of the event propagation
         """
         self.set_size_request(100, 30)
 
-        self.context = widget.window.cairo_create()
+        self.context = context
         self.__draw()
 
         return True
@@ -337,7 +339,7 @@ class ControlVariableWidget(gtk.DrawingArea):
 
         if self.__active_increment == True:
 
-            gobject.timeout_add(self.__increment_time,
+            GObject.timeout_add(self.__increment_time,
                                 self.__increment_value)
 
 
@@ -381,18 +383,19 @@ class ControlVariable(bw.BWHBox):
                                                self.__set_function,
                                                self.__increment_pass)
 
-        self.__left_button = gtk.Button()
+        self.__left_button = Gtk.Button()
         self.__left_button.set_size_request(20, 20)
-        self.__left_arrow = gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_NONE)
+        self.__left_arrow = Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.NONE)
         self.__left_button.add(self.__left_arrow)
         self.__left_button.connect('pressed',
                                    self.__pressed,
                                    -self.__increment_pass)
         self.__left_button.connect('released', self.__released)
 
-        self.__right_button = gtk.Button()
+        self.__right_button = Gtk.Button()
         self.__right_button.set_size_request(20, 20)
-        self.__right_arrow = gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_NONE)
+        self.__right_arrow = Gtk.Arrow(Gtk.ArrowType.RIGHT,
+                                       Gtk.ShadowType.NONE)
         self.__right_button.add(self.__right_arrow)
         self.__right_button.connect('pressed',
                                     self.__pressed,
@@ -419,7 +422,7 @@ class ControlVariable(bw.BWHBox):
             self.__set_function(self.__get_function() + increment)
             self.__control.verify_value()
 
-            gobject.timeout_add(self.__increment_time,
+            GObject.timeout_add(self.__increment_time,
                                 self.__increment_function,
                                 increment)
 
@@ -452,29 +455,29 @@ class ControlFisheye(bw.BWVBox):
         """
         self.__params = bw.BWHBox()
 
-        self.__fisheye_label = gtk.Label(_("<b>Fisheye</b> on ring"))
+        self.__fisheye_label = Gtk.Label(_("<b>Fisheye</b> on ring"))
         self.__fisheye_label.set_use_markup(True)
 
-        self.__ring = gtk.Adjustment(0, 0, self.__ring_max_value, 0.01, 0.01)
+        self.__ring = Gtk.Adjustment(0, 0, self.__ring_max_value, 0.01, 0.01)
 
-        self.__ring_spin = gtk.SpinButton(self.__ring)
+        self.__ring_spin = Gtk.SpinButton(adjustment=self.__ring)
         self.__ring_spin.set_digits(2)
 
-        self.__ring_scale = gtk.HScale(self.__ring)
+        self.__ring_scale = Gtk.HScale(adjustment=self.__ring)
         self.__ring_scale.set_size_request(100, -1)
         self.__ring_scale.set_digits(2)
-        self.__ring_scale.set_value_pos(gtk.POS_LEFT)
+        self.__ring_scale.set_value_pos(Gtk.PositionType.LEFT)
         self.__ring_scale.set_draw_value(False)
-        self.__ring_scale.set_update_policy(gtk.UPDATE_CONTINUOUS)
+        #self.__ring_scale.set_update_policy(Gtk.UPDATE_CONTINUOUS)
 
-        self.__interest_label = gtk.Label(_("with interest factor"))
-        self.__interest = gtk.Adjustment(0, 0, 10, 0.01)
-        self.__interest_spin = gtk.SpinButton(self.__interest)
+        self.__interest_label = Gtk.Label(_("with interest factor"))
+        self.__interest = Gtk.Adjustment(0, 0, 10, 0.01)
+        self.__interest_spin = Gtk.SpinButton(adjustment=self.__interest)
         self.__interest_spin.set_digits(2)
 
-        self.__spread_label = gtk.Label(_("and spread factor"))
-        self.__spread = gtk.Adjustment(0, -1.0, 1.0, 0.01, 0.01)
-        self.__spread_spin = gtk.SpinButton(self.__spread)
+        self.__spread_label = Gtk.Label(_("and spread factor"))
+        self.__spread = Gtk.Adjustment(0, -1.0, 1.0, 0.01, 0.01)
+        self.__spread_spin = Gtk.SpinButton(adjustment=self.__spread)
         self.__spread_spin.set_digits(2)
 
         self.__params.bw_pack_start_noexpand_nofill(self.__fisheye_label)
@@ -491,7 +494,7 @@ class ControlFisheye(bw.BWVBox):
         self.__interest.connect('value_changed', self.__change_interest)
         self.__spread.connect('value_changed', self.__change_spread)
 
-        gobject.timeout_add(REFRESH_RATE, self.__update_fisheye)
+        GObject.timeout_add(REFRESH_RATE, self.__update_fisheye)
 
 
     def __update_fisheye(self):
@@ -510,7 +513,7 @@ class ControlFisheye(bw.BWVBox):
             elif value > ring_max_value:
                 value = ring_max_value
 
-            self.__ring.set_all(value, 1, ring_max_value, 0.01, 0.01, 0)
+            self.__ring.configure(value, 1, ring_max_value, 0.01, 0.01, 0)
             self.__ring_max_value = ring_max_value
 
             self.__ring_scale.queue_draw()
@@ -596,9 +599,9 @@ class ControlInterpolation(bw.BWExpander):
         """
         self.__vbox = bw.BWVBox()
 
-        self.__cartesian_radio = gtk.RadioButton(None, _("Cartesian"))
-        self.__polar_radio = gtk.RadioButton(self.__cartesian_radio,
-                                             _("Polar"))
+        self.__cartesian_radio = Gtk.RadioButton(label=_("Cartesian"))
+        self.__polar_radio = Gtk.RadioButton(group=self.__cartesian_radio,
+                                             label=_("Polar"))
         self.__cartesian_radio.connect('toggled',
                                        self.__change_system,
                                        INTERPOLATION_CARTESIAN)
@@ -611,14 +614,14 @@ class ControlInterpolation(bw.BWExpander):
         self.__system_box.bw_pack_start_noexpand_nofill(self.__cartesian_radio)
 
         self.__frames_box = bw.BWHBox()
-        self.__frames_label = gtk.Label(_("Frames"))
+        self.__frames_label = Gtk.Label(_("Frames"))
         self.__frames_label.set_alignment(0.0, 0.5)
-        self.__frames = gtk.Adjustment(self.radialnet.get_number_of_frames(),
+        self.__frames = Gtk.Adjustment(self.radialnet.get_number_of_frames(),
                                        1,
                                        1000,
                                        1)
         self.__frames.connect('value_changed', self.__change_frames)
-        self.__frames_spin = gtk.SpinButton(self.__frames)
+        self.__frames_spin = Gtk.SpinButton(adjustment=self.__frames)
         self.__frames_box.bw_pack_start_expand_fill(self.__frames_label)
         self.__frames_box.bw_pack_start_noexpand_nofill(self.__frames_spin)
 
@@ -627,7 +630,7 @@ class ControlInterpolation(bw.BWExpander):
 
         self.bw_add(self.__vbox)
 
-        gobject.timeout_add(REFRESH_RATE, self.__update_animation)
+        GObject.timeout_add(REFRESH_RATE, self.__update_animation)
 
 
     def __update_animation(self):
@@ -684,12 +687,12 @@ class ControlLayout(bw.BWExpander):
         """
         self.__hbox = bw.BWHBox()
 
-        self.__layout = gtk.combo_box_new_text()
+        self.__layout = Gtk.ComboBoxText()
         self.__layout.append_text(_("Symmetric"))
         self.__layout.append_text(_("Weighted"))
         self.__layout.set_active(self.radialnet.get_layout())
         self.__layout.connect('changed', self.__change_layout)
-        self.__force = gtk.ToolButton(gtk.STOCK_REFRESH)
+        self.__force = Gtk.ToolButton(Gtk.STOCK_REFRESH)
         self.__force.connect('clicked', self.__force_update)
 
         self.__hbox.bw_pack_start_expand_fill(self.__layout)
@@ -750,13 +753,13 @@ class ControlRingGap(bw.BWVBox):
                                         self.radialnet.get_ring_gap,
                                         self.radialnet.set_ring_gap)
 
-        self.__label = gtk.Label(_("Lower ring gap"))
+        self.__label = Gtk.Label(_("Lower ring gap"))
         self.__label.set_alignment(0.0, 0.5)
-        self.__adjustment = gtk.Adjustment(self.radialnet.get_min_ring_gap(),
+        self.__adjustment = Gtk.Adjustment(self.radialnet.get_min_ring_gap(),
                                            0,
                                            50,
                                            1)
-        self.__spin = gtk.SpinButton(self.__adjustment)
+        self.__spin = Gtk.SpinButton(adjustment=self.__adjustment)
         self.__spin.connect('value_changed', self.__change_lower)
 
         self.__lower_hbox = bw.BWHBox()
@@ -783,8 +786,9 @@ class ControlOptions(bw.BWScrolledWindow):
         """
         bw.BWScrolledWindow.__init__(self)
 
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
-        self.set_shadow_type(gtk.SHADOW_NONE)
+        self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.set_shadow_type(Gtk.ShadowType.NONE)
+        self.set_min_content_height(100)
 
         self.radialnet = radialnet
 
@@ -794,8 +798,8 @@ class ControlOptions(bw.BWScrolledWindow):
     def __create_widgets(self):
         """
         """
-        self.__liststore = gtk.ListStore(gobject.TYPE_BOOLEAN,
-                                         gobject.TYPE_STRING)
+        self.__liststore = Gtk.ListStore(GObject.TYPE_BOOLEAN,
+                                         GObject.TYPE_STRING)
 
         self.__liststore.append([None, _("address")])     # address
         self.__liststore.append([None, _("hostname")])    # hostname
@@ -805,22 +809,22 @@ class ControlOptions(bw.BWScrolledWindow):
         self.__liststore.append([None, _("region")])      # region
         self.__liststore.append([None, _("slow in/out")]) # slow in/out
 
-        self.__cell_toggle = gtk.CellRendererToggle()
+        self.__cell_toggle = Gtk.CellRendererToggle()
         self.__cell_toggle.set_property('activatable', True)
         self.__cell_toggle.connect('toggled',
                                    self.__change_option,
                                    self.__liststore)
 
-        self.__column_toggle = gtk.TreeViewColumn('', self.__cell_toggle)
+        self.__column_toggle = Gtk.TreeViewColumn('', self.__cell_toggle)
         self.__column_toggle.add_attribute(self.__cell_toggle, 'active', 0)
 
-        self.__cell_text = gtk.CellRendererText()
+        self.__cell_text = Gtk.CellRendererText()
 
-        self.__column_text = gtk.TreeViewColumn(_("Enable"),
+        self.__column_text = Gtk.TreeViewColumn(_("Enable"),
                                                 self.__cell_text,
                                                 text=1)
 
-        self.__treeview = gtk.TreeView(self.__liststore)
+        self.__treeview = Gtk.TreeView(self.__liststore)
         self.__treeview.set_enable_search(True)
         self.__treeview.set_search_column(1)
         self.__treeview.append_column(self.__column_toggle)
@@ -828,7 +832,7 @@ class ControlOptions(bw.BWScrolledWindow):
 
         self.add_with_viewport(self.__treeview)
 
-        gobject.timeout_add(REFRESH_RATE, self.__update_options)
+        GObject.timeout_add(REFRESH_RATE, self.__update_options)
 
 
     def __update_options(self):
@@ -914,13 +918,13 @@ class ControlView(bw.BWExpander):
 
 
 
-class ControlNavigation(gtk.DrawingArea):
+class ControlNavigation(Gtk.DrawingArea):
     """
     """
     def __init__(self, radialnet):
         """
         """
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
 
         self.radialnet = radialnet
 
@@ -951,7 +955,7 @@ class ControlNavigation(gtk.DrawingArea):
         self.__rotate_clicked = False
         self.__move_clicked = None
 
-        self.connect('expose_event', self.expose)
+        self.connect('draw', self.expose)
         self.connect('button_press_event', self.button_press)
         self.connect('button_release_event', self.button_release)
         self.connect('motion_notify_event', self.motion_notify)
@@ -960,16 +964,16 @@ class ControlNavigation(gtk.DrawingArea):
         self.connect('key_press_event', self.key_press)
         self.connect('key_release_event', self.key_release)
 
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK |
-                        gtk.gdk.BUTTON_RELEASE_MASK |
-                        gtk.gdk.ENTER_NOTIFY |
-                        gtk.gdk.LEAVE_NOTIFY |
-                        gtk.gdk.MOTION_NOTIFY |
-                        gtk.gdk.NOTHING |
-                        gtk.gdk.KEY_PRESS_MASK |
-                        gtk.gdk.KEY_RELEASE_MASK |
-                        gtk.gdk.POINTER_MOTION_HINT_MASK |
-                        gtk.gdk.POINTER_MOTION_MASK)
+        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK |
+                        Gdk.EventMask.BUTTON_RELEASE_MASK |
+                        Gdk.EventMask.ENTER_NOTIFY_MASK |
+                        Gdk.EventMask.LEAVE_NOTIFY_MASK |
+                        #Gdk.EventMask.MOTION_NOTIFY |
+                        #Gdk.EventMask.NOTHING |
+                        Gdk.EventMask.KEY_PRESS_MASK |
+                        Gdk.EventMask.KEY_RELEASE_MASK |
+                        Gdk.EventMask.POINTER_MOTION_HINT_MASK |
+                        Gdk.EventMask.POINTER_MOTION_MASK)
 
         self.__rotate_node.set_coordinate(40, self.radialnet.get_rotation())
 
@@ -977,7 +981,7 @@ class ControlNavigation(gtk.DrawingArea):
     def key_press(self, widget, event):
         """
         """
-        key = gtk.gdk.keyval_name(event.keyval)
+        key = Gtk.gdk.keyval_name(event.keyval)
 
         self.queue_draw()
 
@@ -987,7 +991,7 @@ class ControlNavigation(gtk.DrawingArea):
     def key_release(self, widget, event):
         """
         """
-        key = gtk.gdk.keyval_name(event.keyval)
+        key = Gtk.gdk.keyval_name(event.keyval)
 
         self.queue_draw()
 
@@ -1024,20 +1028,20 @@ class ControlNavigation(gtk.DrawingArea):
 
         if self.__rotate_is_clicked(pointer) == True:
 
-            event.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+            event.window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
             self.__rotating = True
 
         direction = self.__move_is_clicked(pointer)
 
         if direction != None and self.__moving == None:
 
-            event.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+            event.window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
             self.__moving = direction
             self.__move_in_direction(direction)
 
         if self.__center_is_clicked(pointer) == True:
 
-            event.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+            event.window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
             self.__centering = True
             self.__move_position = (0, 0)
             self.radialnet.set_translation(self.__move_position)
@@ -1062,7 +1066,7 @@ class ControlNavigation(gtk.DrawingArea):
         self.__rotating = False     # stop rotate
         self.__move_factor = 1
 
-        event.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+        event.window.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
 
         self.queue_draw()
 
@@ -1101,19 +1105,19 @@ class ControlNavigation(gtk.DrawingArea):
         return False
 
 
-    def expose(self, widget, event):
+    def expose(self, widget, context):
         """
         Drawing callback
         @type  widget: GtkWidget
         @param widget: Gtk widget superclass
-        @type  event: GtkEvent
-        @param event: Gtk event of widget
+        @type  context: cairo_t
+        @param event: cairo.Context pf the widget
         @rtype: boolean
         @return: Indicator of the event propagation
         """
         self.set_size_request(120, 130)
 
-        self.context = widget.window.cairo_create()
+        self.context = context
         self.__draw()
 
         return False
@@ -1241,7 +1245,7 @@ class ControlNavigation(gtk.DrawingArea):
             if self.__move_factor < self.__move_factor_limit:
                 self.__move_factor += 1
 
-            gobject.timeout_add(self.__move_pass,
+            GObject.timeout_add(self.__move_pass,
                                 self.__move_in_direction,
                                 direction)
 

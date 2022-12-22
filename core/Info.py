@@ -26,5 +26,5 @@ INFO = {'name' :     'RadialNet',
         'version':   '0.45',
         'website':   'http://www.dca.ufrn.br/~joaomedeiros/radialnet/',
         'authors':   ['João Paulo de Souza Medeiros'],
-        'license':   file(os.path.join(path.get_dirbase(), 'LICENSE')).read(),
+        'license':   open(os.path.join(path.get_dirbase(), 'LICENSE')).read(),
         'copyright': 'Copyright (C) 2007-2014 Joao Paulo de Souza Medeiros'}

@@ -18,9 +18,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GObject
+
 import re
-import gtk
-import gobject
 
 import bestwidgets as bw
 
@@ -46,10 +48,9 @@ class HostsViewer(bw.BWMainWindow):
         self.set_title(_("Hosts Viewer"))
         self.set_default_size(DIMENSION[0], DIMENSION[1])
 
-        self.set_position(gtk.WIN_POS_CENTER)
+        self.set_position(Gtk.WindowPosition.CENTER)
 
         self.__nodes = nodes
-        self.__view = None
 
         self.__create_widgets()
 
@@ -57,10 +58,11 @@ class HostsViewer(bw.BWMainWindow):
     def __create_widgets(self):
         """
         """
-        self.__panel = gtk.HPaned()
+        self.__panel = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
         self.__panel.set_border_width(6)
 
         self.__list = HostsList(self, self.__nodes)
+        self.__view = NodeNotebook(self.__nodes[0])
 
         self.__panel.add1(self.__list)
         self.__panel.add2(self.__view)
@@ -73,25 +75,23 @@ class HostsViewer(bw.BWMainWindow):
     def change_notebook(self, node):
         """
         """
-        if self.__view != None:
-            self.__view.destroy()
-
+        self.__panel.remove(self.__panel.get_child2())
+        self.__view.destroy()
         self.__view = NodeNotebook(node)
-        self.__view.show_all()
-
         self.__panel.add2(self.__view)
+        self.__panel.get_child2().show_all()
 
 
 
-class HostsList(gtk.ScrolledWindow):
+class HostsList(Gtk.ScrolledWindow):
     """
     """
     def __init__(self, parent, nodes):
         """
         """
         super(HostsList, self).__init__()
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.set_shadow_type(gtk.SHADOW_NONE)
+        self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.set_shadow_type(Gtk.ShadowType.NONE)
 
         self.__parent = parent
         self.__nodes = nodes
@@ -102,16 +102,15 @@ class HostsList(gtk.ScrolledWindow):
     def __create_widgets(self):
         """
         """
-        self.__cell = gtk.CellRendererText()
+        self.__cell = Gtk.CellRendererText()
 
-        self.__hosts_store = gtk.ListStore(gobject.TYPE_INT,
-                                           gobject.TYPE_INT,
-                                           gobject.TYPE_STRING,
-                                           gobject.TYPE_STRING,
-                                           gobject.TYPE_BOOLEAN)
+        self.__hosts_store = Gtk.ListStore(GObject.TYPE_INT,
+                                           GObject.TYPE_INT,
+                                           GObject.TYPE_STRING,
+                                           GObject.TYPE_STRING,
+                                           GObject.TYPE_BOOLEAN)
 
-        self.__hosts_treeview = gtk.TreeView(self.__hosts_store)
-        self.__hosts_treeview.connect('cursor-changed', self.__cursor_callback)
+        self.__hosts_treeview = Gtk.TreeView(self.__hosts_store)
 
         for i in range(len(self.__nodes)):
 
@@ -135,7 +134,7 @@ class HostsList(gtk.ScrolledWindow):
 
         for i in range(0, len(HOSTS_HEADER)):
 
-            column = gtk.TreeViewColumn(HOSTS_HEADER[i],
+            column = Gtk.TreeViewColumn(HOSTS_HEADER[i],
                                         self.__cell,
                                         text = i)
 
@@ -157,7 +156,8 @@ class HostsList(gtk.ScrolledWindow):
         self.add_with_viewport(self.__hosts_treeview)
 
         self.__hosts_treeview.set_cursor((0,))
-        self.__cursor_callback(self.__hosts_treeview)
+        #self.__cursor_callback(self.__hosts_treeview)
+        self.__hosts_treeview.connect('cursor-changed', self.__cursor_callback)
 
 
     def __cursor_callback(self, widget):

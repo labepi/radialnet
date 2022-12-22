@@ -18,12 +18,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, Gdk, Pango, GObject
+
 import re
 import sys
-import gtk
-import pango
-import thread
-import gobject
 import tempfile
 
 from subprocess import Popen, PIPE
@@ -123,14 +123,14 @@ class Nmap(bw.BWVBox):
         args = ["-oX", self.__fnxml] + self.__cmd.split()
 
         self.__handle = Popen([self.__path] + args,
-                              bufsize=1,
+                              bufsize=0,
                               stdin=PIPE,
                               stdout=self.__fdout.fileno(),
                               stderr=self.__fderr.fileno(),
                               shell=False)
 
         self.__load.set_sensitive(False)
-        gobject.timeout_add(REFRESH_RATE, self.__check_output)
+        GObject.timeout_add(REFRESH_RATE, self.__check_output)
 
 
     def __check_output(self):
@@ -203,7 +203,7 @@ class Nmap(bw.BWVBox):
 
         buff.create_tag("number",
                         foreground="#000000",
-                        style=pango.STYLE_ITALIC)
+                        style=Pango.Style.ITALIC)
 
         buff.create_tag("value",
                         foreground="#888800")
@@ -211,7 +211,7 @@ class Nmap(bw.BWVBox):
         buff.create_tag("clean")
 
         buff.create_tag("header",
-                        weight=pango.WEIGHT_BOLD)
+                        weight=Pango.Weight.BOLD)
 
         buff.create_tag("port",
                         foreground="#00aa00")
@@ -228,7 +228,7 @@ class Nmap(bw.BWVBox):
         buff.create_tag("brazil",
                         foreground="#005500",
                         background="#ffff00",
-                        weight=pango.WEIGHT_BOLD)
+                        weight=Pango.Weight.BOLD)
 
 
     def load(self, widget):
@@ -257,16 +257,16 @@ class Nmap(bw.BWVBox):
         """
         """
         if widget.get_active():
-            self.__view.bw_set_wrap_mode(gtk.WRAP_WORD)
+            self.__view.bw_set_wrap_mode(Gtk.WrapMode.WORD)
 
         else:
-            self.__view.bw_set_wrap_mode(gtk.WRAP_NONE)
+            self.__view.bw_set_wrap_mode(Gtk.WrapMode.NONE)
 
 
     def entry_check(self, widget, event):
         """
         """
-        key = gtk.gdk.keyval_name(event.keyval)
+        key = Gdk.keyval_name(event.keyval)
 
         if key == "KP_Enter" or key == "Return":
             self.__button.clicked()
@@ -275,26 +275,26 @@ class Nmap(bw.BWVBox):
     def __create_widgets(self):
         """
         """
-        self.__font = pango.FontDescription('Monospace')
+        self.__font = Pango.FontDescription('Monospace')
 
         self.__command = bw.BWHBox()
         self.__actions = bw.BWHBox()
 
         self.__label = bw.BWSectionLabel("Nmap")
-        self.__entry = gtk.Entry()
+        self.__entry = Gtk.Entry()
         self.__entry.modify_font(self.__font)
         self.__entry.set_text(self.__cmd)
         self.__entry.connect("changed", self.set_command)
         self.__entry.connect("key-press-event", self.entry_check)
 
-        self.__button = bw.BWStockButton(gtk.STOCK_EXECUTE,
+        self.__button = bw.BWStockButton(Gtk.STOCK_EXECUTE,
                                          _("Scan"),
-                                         gtk.ICON_SIZE_MENU)
+                                         Gtk.IconSize.MENU)
         self.__button.connect("clicked", self.run)
 
-        self.__load = bw.BWStockButton(gtk.STOCK_JUMP_TO,
+        self.__load = bw.BWStockButton(Gtk.STOCK_JUMP_TO,
                                        _("Load"),
-                                       gtk.ICON_SIZE_MENU)
+                                       Gtk.IconSize.MENU)
         self.__load.connect("clicked", self.load)
         self.__load.set_sensitive(False)
 
@@ -303,19 +303,19 @@ class Nmap(bw.BWVBox):
         self.__view.bw_set_scroll(True)
         self.__view.bw_set_editable(False)
         self.__view.bw_modify_font(self.__font)
-        self.__view.bw_set_wrap_mode(gtk.WRAP_WORD)
+        self.__view.bw_set_wrap_mode(Gtk.WrapMode.WORD)
 
-        self.__scroll = gtk.CheckButton(_("Auto-scroll"))
+        self.__scroll = Gtk.CheckButton(_("Auto-scroll"))
         self.__scroll.connect("toggled", self.__toggle_scroll)
         self.__scroll.set_active(True)
 
         self.create_text_tags()
 
-        self.__colors = gtk.CheckButton(_("Highlight"))
+        self.__colors = Gtk.CheckButton(_("Highlight"))
         self.__colors.connect("toggled", self.__toggle_colors)
         self.__colors.set_active(True)
 
-        self.__wrap = gtk.CheckButton(_("Wrap"))
+        self.__wrap = Gtk.CheckButton(_("Wrap"))
         self.__wrap.connect("toggled", self.__toggle_wrap)
         self.__wrap.set_active(True)
 

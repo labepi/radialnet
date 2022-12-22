@@ -18,9 +18,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-import gtk
-import pango
-import gobject
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GObject, Pango
 
 import bestwidgets as bw
 
@@ -65,18 +65,27 @@ TCP_SEQ_NOTE = _("""\
 
 
 
-class NodeNotebook(gtk.Notebook):
+class NodeNotebook(Gtk.Notebook):
     """
     """
     def __init__(self, node):
         """
         """
-        gtk.Notebook.__init__(self)
-        self.set_tab_pos(gtk.POS_TOP)
+        Gtk.Notebook.__init__(self)
+        self.set_tab_pos(Gtk.PositionType.TOP)
 
         self.__node = node
 
         self.__create_widgets()
+
+    def __del__(self):
+        """
+        """
+        page = self.get_current_page()
+        while page > -1:
+            child = self.get_nth_page(page)
+            self.detach_tab(child)
+            page = self.get_current_page()
 
 
     def __create_widgets(self):
@@ -94,26 +103,35 @@ class NodeNotebook(gtk.Notebook):
 
 
 
-class ServicesPage(gtk.Notebook):
+class ServicesPage(Gtk.Notebook):
     """
     """
     def __init__(self, node):
         """
         """
-        gtk.Notebook.__init__(self)
+        Gtk.Notebook.__init__(self)
         self.set_border_width(6)
-        self.set_tab_pos(gtk.POS_TOP)
+        self.set_tab_pos(Gtk.PositionType.TOP)
 
         self.__node = node
-        self.__font = pango.FontDescription('Monospace')
+        self.__font = Pango.FontDescription('Monospace')
 
         self.__create_widgets()
+
+    def __del__(self):
+        """
+        """
+        page = self.get_current_page()
+        while page > -1:
+            child = self.get_nth_page(page)
+            self.detach_tab(child)
+            page = self.get_current_page()
 
 
     def __create_widgets(self):
         """
         """
-        self.__cell = gtk.CellRendererText()
+        self.__cell = Gtk.CellRendererText()
 
         # texteditor widgets
         self.__texteditor = bw.BWTextEditor()
@@ -121,7 +139,7 @@ class ServicesPage(gtk.Notebook):
         self.__texteditor.bw_set_editable(False)
         self.__texteditor.set_border_width(0)
 
-        self.__select_combobox = gtk.combo_box_new_text()
+        self.__select_combobox = Gtk.ComboBoxText()
         self.__select_combobox.connect('changed', self.__change_text_value)
 
         self.__viewer = bw.BWVBox(spacing=6)
@@ -138,27 +156,27 @@ class ServicesPage(gtk.Notebook):
 
         self.__ports_scroll = bw.BWScrolledWindow()
 
-        self.__ports_store = gtk.TreeStore(gobject.TYPE_INT,
-                                           gobject.TYPE_STRING,
-                                           gobject.TYPE_STRING,
-                                           gobject.TYPE_STRING,
-                                           gobject.TYPE_STRING,
-                                           gobject.TYPE_STRING,
-                                           gobject.TYPE_BOOLEAN)
+        self.__ports_store = Gtk.TreeStore(GObject.TYPE_INT,
+                                           GObject.TYPE_STRING,
+                                           GObject.TYPE_STRING,
+                                           GObject.TYPE_STRING,
+                                           GObject.TYPE_STRING,
+                                           GObject.TYPE_STRING,
+                                           GObject.TYPE_BOOLEAN)
 
-        self.__ports_treeview = gtk.TreeView(self.__ports_store)
+        self.__ports_treeview = Gtk.TreeView(self.__ports_store)
 
         for port in self.__node.get_info('ports'):
 
             color = SERVICE_COLORS[port['state']['state']]
 
-            if port['service'].has_key('name'):
+            if 'name' in port['service']:
                 service_name = port['service']['name']
 
             else:
                 service_name = _("<unknown>")
 
-            if port['service'].has_key('method'):
+            if 'method' in port['service']:
                 service_method = port['service']['method']
 
             else:
@@ -226,7 +244,7 @@ class ServicesPage(gtk.Notebook):
 
         for i in range(len(PORTS_HEADER)):
 
-            column = gtk.TreeViewColumn(PORTS_HEADER[i],
+            column = Gtk.TreeViewColumn(PORTS_HEADER[i],
                                         self.__cell,
                                         text = i)
 
@@ -249,13 +267,13 @@ class ServicesPage(gtk.Notebook):
 
         self.__xports_scroll = bw.BWScrolledWindow()
 
-        self.__xports_store = gtk.TreeStore(gobject.TYPE_INT,
-                                            gobject.TYPE_STRING,
-                                            gobject.TYPE_STRING,
-                                            gobject.TYPE_STRING,
-                                            gobject.TYPE_BOOLEAN)
+        self.__xports_store = Gtk.TreeStore(GObject.TYPE_INT,
+                                            GObject.TYPE_STRING,
+                                            GObject.TYPE_STRING,
+                                            GObject.TYPE_STRING,
+                                            GObject.TYPE_BOOLEAN)
 
-        self.__xports_treeview = gtk.TreeView(self.__xports_store)
+        self.__xports_treeview = Gtk.TreeView(self.__xports_store)
 
         for xports in self.__node.get_info('extraports'):
 
@@ -281,7 +299,7 @@ class ServicesPage(gtk.Notebook):
 
         for i in range(len(EXTRAPORTS_HEADER)):
 
-            column = gtk.TreeViewColumn(EXTRAPORTS_HEADER[i],
+            column = Gtk.TreeViewColumn(EXTRAPORTS_HEADER[i],
                                         self.__cell,
                                         text = i)
 
@@ -328,7 +346,7 @@ class SystemPage(bw.BWScrolledWindow):
         bw.BWScrolledWindow.__init__(self)
 
         self.__node = node
-        self.__font = pango.FontDescription('Monospace')
+        self.__font = Pango.FontDescription('Monospace')
 
         self.__create_widgets()
 
@@ -339,21 +357,21 @@ class SystemPage(bw.BWScrolledWindow):
         self.__vbox = bw.BWVBox()
         self.__vbox.set_border_width(6)
 
-        self.__cell = gtk.CellRendererText()
+        self.__cell = Gtk.CellRendererText()
 
         self.__general_frame = bw.BWExpander(_("General information"))
         self.__sequences_frame = bw.BWExpander(_("Sequences"))
         self.__os_frame = bw.BWExpander(_("Operating System"))
 
-        self.__sequences_frame.bw_add(gtk.Label(_("No sequence information.")))
-        self.__os_frame.bw_add(gtk.Label(_("No OS information.")))
+        self.__sequences_frame.bw_add(Gtk.Label(_("No sequence information.")))
+        self.__os_frame.bw_add(Gtk.Label(_("No OS information.")))
 
         # general information widgets
         self.__general = bw.BWTable(3, 2)
 
         self.__address_label = bw.BWSectionLabel(_("Address:"))
-        self.__address_list = gtk.combo_box_entry_new_text()
-        self.__address_list.child.set_editable(False)
+        self.__address_list = Gtk.ComboBoxText()
+        #self.__address_list.child.set_editable(False)
 
         for address in self.__node.get_info('addresses'):
 
@@ -368,15 +386,16 @@ class SystemPage(bw.BWScrolledWindow):
         self.__address_list.set_active(0)
 
         self.__general.bw_attach_next(self.__address_label,
-                                      yoptions=gtk.FILL,
-                                      xoptions=gtk.FILL)
-        self.__general.bw_attach_next(self.__address_list, yoptions=gtk.FILL)
+                                      yoptions=Gtk.AttachOptions.FILL,
+                                      xoptions=Gtk.AttachOptions.FILL)
+        self.__general.bw_attach_next(self.__address_list,
+                                      yoptions=Gtk.AttachOptions.FILL)
 
         if self.__node.get_info('hostnames') != None:
 
             self.__hostname_label = bw.BWSectionLabel(_("Hostname:"))
-            self.__hostname_list = gtk.combo_box_entry_new_text()
-            self.__hostname_list.child.set_editable(False)
+            self.__hostname_list = Gtk.ComboBoxText()
+            #self.__hostname_list.child.set_editable(False)
 
             for hostname in self.__node.get_info('hostnames'):
 
@@ -386,10 +405,10 @@ class SystemPage(bw.BWScrolledWindow):
             self.__hostname_list.set_active(0)
 
             self.__general.bw_attach_next(self.__hostname_label,
-                                          yoptions=gtk.FILL,
-                                          xoptions=gtk.FILL)
+                                          yoptions=Gtk.AttachOptions.FILL,
+                                          xoptions=Gtk.AttachOptions.FILL)
             self.__general.bw_attach_next(self.__hostname_list,
-                                          yoptions=gtk.FILL)
+                                          yoptions=Gtk.AttachOptions.FILL)
 
         if self.__node.get_info('uptime') != None:
 
@@ -405,10 +424,10 @@ class SystemPage(bw.BWScrolledWindow):
             self.__uptime_value.set_line_wrap(False)
 
             self.__general.bw_attach_next(self.__uptime_label,
-                                          yoptions=gtk.FILL,
-                                          xoptions=gtk.FILL)
+                                          yoptions=Gtk.AttachOptions.FILL,
+                                          xoptions=Gtk.AttachOptions.FILL)
             self.__general.bw_attach_next(self.__uptime_value,
-                                          yoptions=gtk.FILL)
+                                          yoptions=Gtk.AttachOptions.FILL)
 
         self.__general_frame.bw_add(self.__general)
         self.__general_frame.set_expanded(True)
@@ -439,7 +458,7 @@ class SystemPage(bw.BWScrolledWindow):
 
             self.__sequences.attach(tcp_class, 1, 2, 1, 2)
 
-            tcp_values = gtk.combo_box_entry_new_text()
+            tcp_values = Gtk.ComboBoxText()
 
             for value in tcp['values']:
                 tcp_values.append_text(value)
@@ -452,7 +471,8 @@ class SystemPage(bw.BWScrolledWindow):
             tcp_note.set_selectable(True)
             tcp_note.set_line_wrap(False)
             tcp_note.set_alignment(1.0, 0.5)
-            tcp_note.set_markup(TCP_SEQ_NOTE % (tcp['index'], tcp['difficulty']))
+            tcp_note.set_markup(TCP_SEQ_NOTE % (tcp['index'],
+                                tcp['difficulty']))
 
             self.__sequences.attach(tcp_note, 0, 3, 4, 5)
 
@@ -464,7 +484,7 @@ class SystemPage(bw.BWScrolledWindow):
 
             self.__sequences.attach(ip_id_class, 1, 2, 2, 3)
 
-            ip_id_values = gtk.combo_box_entry_new_text()
+            ip_id_values = Gtk.ComboBoxText()
 
             for value in ip_id['values']:
                 ip_id_values.append_text(value)
@@ -483,7 +503,7 @@ class SystemPage(bw.BWScrolledWindow):
 
             if tcp_ts['values'] != None:
 
-                tcp_ts_values = gtk.combo_box_entry_new_text()
+                tcp_ts_values = Gtk.ComboBoxText()
 
                 for value in tcp_ts['values']:
                     tcp_ts_values.append_text(value)
@@ -495,23 +515,23 @@ class SystemPage(bw.BWScrolledWindow):
             self.__sequences_frame.bw_add(self.__sequences)
 
         # operating system information widgets
-        self.__os = gtk.Notebook()
-        self.__os.set_tab_pos(gtk.POS_LEFT)
+        self.__os = Gtk.Notebook()
+        self.__os.set_tab_pos(Gtk.PositionType.LEFT)
 
         os = self.__node.get_info('os')
 
         if os != None:
 
-            if os.has_key('matches'):
+            if 'matches' in os:
 
                 self.__match_scroll = bw.BWScrolledWindow()
 
-                self.__match_store = gtk.ListStore(gobject.TYPE_INT,
-                                                   gobject.TYPE_STRING,
-                                                   gobject.TYPE_INT,
-                                                   gobject.TYPE_BOOLEAN)
+                self.__match_store = Gtk.ListStore(GObject.TYPE_INT,
+                                                   GObject.TYPE_STRING,
+                                                   GObject.TYPE_INT,
+                                                   GObject.TYPE_BOOLEAN)
 
-                self.__match_treeview = gtk.TreeView(self.__match_store)
+                self.__match_treeview = Gtk.TreeView(self.__match_store)
 
                 for os_match in os['matches']:
 
@@ -524,7 +544,7 @@ class SystemPage(bw.BWScrolledWindow):
 
                 for i in range(len(OSMATCH_HEADER)):
 
-                    column = gtk.TreeViewColumn(OSMATCH_HEADER[i],
+                    column = Gtk.TreeViewColumn(OSMATCH_HEADER[i],
                                                 self.__cell,
                                                 text = i)
 
@@ -544,24 +564,24 @@ class SystemPage(bw.BWScrolledWindow):
                 self.__os.append_page(self.__match_scroll,
                                       bw.BWLabel(_("Match")))
 
-            if os.has_key('classes'):
+            if 'classes' in os:
 
                 self.__class_scroll = bw.BWScrolledWindow()
 
-                self.__class_store = gtk.ListStore(gobject.TYPE_INT,
-                                                   gobject.TYPE_STRING,
-                                                   gobject.TYPE_STRING,
-                                                   gobject.TYPE_STRING,
-                                                   gobject.TYPE_STRING,
-                                                   gobject.TYPE_BOOLEAN)
+                self.__class_store = Gtk.ListStore(GObject.TYPE_INT,
+                                                   GObject.TYPE_STRING,
+                                                   GObject.TYPE_STRING,
+                                                   GObject.TYPE_STRING,
+                                                   GObject.TYPE_STRING,
+                                                   GObject.TYPE_BOOLEAN)
 
-                self.__class_treeview = gtk.TreeView(self.__class_store)
+                self.__class_treeview = Gtk.TreeView(self.__class_store)
 
                 for os_class in os['classes']:
 
                     os_gen = ''
 
-                    if os_class.has_key('os_gen'):
+                    if 'os_gen' in os_class:
                         os_gen = os_class['os_gen']
 
                     self.__class_store.append([os_class['accuracy'],
@@ -575,7 +595,7 @@ class SystemPage(bw.BWScrolledWindow):
 
                 for i in range(len(OSCLASS_HEADER)):
 
-                    column = gtk.TreeViewColumn(OSCLASS_HEADER[i],
+                    column = Gtk.TreeViewColumn(OSCLASS_HEADER[i],
                                                 self.__cell,
                                                 text = i)
 
@@ -595,20 +615,23 @@ class SystemPage(bw.BWScrolledWindow):
                 self.__os.append_page(self.__class_scroll,
                                       bw.BWLabel(_("Class")))
 
-            self.__fp_viewer = bw.BWTextEditor()
-            self.__fp_viewer.bw_modify_font(self.__font)
-            self.__fp_viewer.bw_set_editable(False)
-            self.__fp_viewer.bw_set_text(os['fingerprint'])
+            if 'fingerprint' in os:
+                self.__fp_viewer = bw.BWTextEditor()
+                self.__fp_viewer.bw_modify_font(self.__font)
+                self.__fp_viewer.bw_set_editable(False)
+                self.__fp_viewer.bw_set_text(os['fingerprint'])
+                self.__os.append_page(self.__fp_viewer,
+                                      bw.BWLabel(_("Fingerprint")))
 
             self.__fp_ports = bw.BWHBox()
             self.__fp_label = bw.BWSectionLabel(_("Used ports:"))
 
-            self.__fp_ports_list = gtk.combo_box_entry_new_text()
-            self.__fp_ports_list.child.set_editable(False)
+            self.__fp_ports_list = Gtk.ComboBoxText()
+            #self.__fp_ports_list.child.set_editable(False)
 
             self.__fp_vbox = bw.BWVBox()
 
-            if os.has_key('used_ports'):
+            if 'used_ports' in os:
 
                 used_ports = os['used_ports']
 
@@ -624,8 +647,6 @@ class SystemPage(bw.BWScrolledWindow):
 
                 self.__fp_vbox.bw_pack_start_noexpand_nofill(self.__fp_ports)
 
-            self.__os.append_page(self.__fp_viewer,
-                                  bw.BWLabel(_("Fingerprint")))
             self.__fp_vbox.bw_pack_start_expand_fill(self.__os)
 
             self.__os_frame.bw_add(self.__fp_vbox)
@@ -658,8 +679,8 @@ class TraceroutePage(bw.BWVBox):
         """
         if self.__node.get_info('trace') == None:
 
-            self.__trace_label = gtk.Label(NO_TRACE_TEXT)
-            self.pack_start(self.__trace_label, True, True)
+            self.__trace_label = Gtk.Label(NO_TRACE_TEXT)
+            self.pack_start(self.__trace_label, True, True, 0)
 
         else:
 
@@ -667,19 +688,19 @@ class TraceroutePage(bw.BWVBox):
             hops = self.__node.get_info('trace')['hops']
             ttls = [int(i['ttl']) for i in hops]
 
-            self.__cell = gtk.CellRendererText()
+            self.__cell = Gtk.CellRendererText()
 
             self.__trace_scroll = bw.BWScrolledWindow()
             self.__trace_scroll.set_border_width(0)
 
-            self.__trace_store = gtk.ListStore(gobject.TYPE_INT,
-                                               gobject.TYPE_STRING,
-                                               gobject.TYPE_STRING,
-                                               gobject.TYPE_STRING,
-                                               gobject.TYPE_STRING,
-                                               gobject.TYPE_BOOLEAN)
+            self.__trace_store = Gtk.ListStore(GObject.TYPE_INT,
+                                               GObject.TYPE_STRING,
+                                               GObject.TYPE_STRING,
+                                               GObject.TYPE_STRING,
+                                               GObject.TYPE_STRING,
+                                               GObject.TYPE_BOOLEAN)
 
-            self.__trace_treeview = gtk.TreeView(self.__trace_store)
+            self.__trace_treeview = Gtk.TreeView(self.__trace_store)
 
             count = 0
 
@@ -710,7 +731,7 @@ class TraceroutePage(bw.BWVBox):
 
             for i in range(len(TRACE_HEADER)):
 
-                column = gtk.TreeViewColumn(TRACE_HEADER[i],
+                column = Gtk.TreeViewColumn(TRACE_HEADER[i],
                                             self.__cell,
                                             text = i)
 

@@ -18,11 +18,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, Gdk, GObject
+
 import math
 import time
 import copy
-import gobject
 
 import util.geometry as geometry
 import util.misc as misc
@@ -58,7 +60,7 @@ INTERPOLATION_CARTESIAN = 0
 INTERPOLATION_POLAR     = 1
 
 
-class RadialNet(gtk.DrawingArea):
+class RadialNet(Gtk.DrawingArea):
     """
     Radial network visualization widget
     """
@@ -118,7 +120,7 @@ class RadialNet(gtk.DrawingArea):
 
         super(RadialNet, self).__init__()
 
-        self.connect('expose_event', self.expose)
+        self.connect('draw', self.expose)
         self.connect('button_press_event', self.button_press)
         self.connect('button_release_event', self.button_release)
         self.connect('motion_notify_event', self.motion_notify)
@@ -128,19 +130,20 @@ class RadialNet(gtk.DrawingArea):
         self.connect('key_release_event', self.key_release)
         self.connect('scroll_event', self.scroll_event)
 
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK |
-                        gtk.gdk.BUTTON_RELEASE_MASK |
-                        gtk.gdk.ENTER_NOTIFY |
-                        gtk.gdk.LEAVE_NOTIFY |
-                        gtk.gdk.MOTION_NOTIFY |
-                        gtk.gdk.NOTHING |
-                        gtk.gdk.KEY_PRESS_MASK |
-                        gtk.gdk.KEY_RELEASE_MASK |
-                        gtk.gdk.POINTER_MOTION_HINT_MASK |
-                        gtk.gdk.POINTER_MOTION_MASK |
-                        gtk.gdk.SCROLL_MASK)
+        self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK |
+                        Gdk.EventMask.BUTTON_RELEASE_MASK |
+                        Gdk.EventMask.ENTER_NOTIFY_MASK |
+                        Gdk.EventMask.LEAVE_NOTIFY_MASK |
+                        #Gdk.EventMask.MOTION_NOTIFY |
+                        #Gdk.EventMask.NOTHING |
+                        Gdk.EventMask.KEY_PRESS_MASK |
+                        Gdk.EventMask.KEY_RELEASE_MASK |
+                        Gdk.EventMask.POINTER_MOTION_HINT_MASK |
+                        Gdk.EventMask.POINTER_MOTION_MASK |
+                        Gdk.EventMask.SCROLL_MASK)
 
-        self.set_flags(gtk.CAN_FOCUS)
+        #self.set_flags(Gtk.CAN_FOCUS)
+        self.set_can_focus(True)
         self.grab_focus()
 
 
@@ -493,10 +496,10 @@ class RadialNet(gtk.DrawingArea):
     def scroll_event(self, widget, event):
         """
         """
-        if event.direction == gtk.gdk.SCROLL_UP:
+        if event.direction == Gdk.ScrollDirection.UP:
             self.set_scale(self.__scale + 0.01)
 
-        if event.direction == gtk.gdk.SCROLL_DOWN:
+        if event.direction == Gdk.ScrollDirection.DOWN:
             self.set_scale(self.__scale - 0.01)
 
         self.queue_draw()
@@ -507,7 +510,7 @@ class RadialNet(gtk.DrawingArea):
     def key_press(self, widget, event):
         """
         """
-        key = gtk.gdk.keyval_name(event.keyval)
+        key = Gdk.keyval_name(event.keyval)
 
         if key == 'KP_Add':
             self.set_ring_gap(self.__ring_gap + 1)
@@ -530,7 +533,7 @@ class RadialNet(gtk.DrawingArea):
     def key_release(self, widget, event):
         """
         """
-        key = gtk.gdk.keyval_name(event.keyval)
+        key = Gdk.keyval_name(event.keyval)
 
         if key == 'c':
             self.__translation = (0, 0)
@@ -669,7 +672,7 @@ class RadialNet(gtk.DrawingArea):
 
             if result != None:
 
-                xw, yw = self.window.get_origin()
+                _, xw, yw = self.get_parent_window().get_origin()
                 node, point = result
                 x, y = point
 
@@ -749,19 +752,19 @@ class RadialNet(gtk.DrawingArea):
         return False
 
 
-    def expose(self, widget, event):
+    def expose(self, widget, context):
         """
         Drawing callback
         @type  widget: GtkWidget
         @param widget: Gtk widget superclass
-        @type  event: GtkEvent
-        @param event: Gtk event of widget
+        @type  context: cairo_t
+        @param event: cairo.Context pf the widget
         @rtype: boolean
         @return: Indicator of the event propagation
         """
-        self.context = widget.window.cairo_create()
+        self.context = context
 
-        self.context.rectangle(*event.area)
+        self.context.rectangle(*context.clip_extents())
         self.context.set_source_rgb(1.0, 1.0, 1.0)
         self.context.fill()
 
@@ -1056,9 +1059,10 @@ class RadialNet(gtk.DrawingArea):
 
             for icon in icons:
 
-                self.context.set_source_pixbuf(icon,
-                                               round(xc + x + x_gap),
-                                               round(yc - y + y_gap - 6))
+                Gdk.cairo_set_source_pixbuf(self.context,
+                                            icon,
+                                            round(xc + x + x_gap),
+                                            round(yc - y + y_gap - 6))
                 self.context.paint()
 
                 x_gap += 13
@@ -1433,9 +1437,9 @@ class RadialNet(gtk.DrawingArea):
             self.__calc_node_positions()
 
         # steps for slow-in/slow-out animation
-        steps = range(self.__number_of_frames)
+        steps = list(range(self.__number_of_frames))
 
-        for i in range(len(steps) / 2):
+        for i in range(int(len(steps) / 2)):
             steps[self.__number_of_frames - 1 - i] = steps[i]
 
         # normalize angles and calculate interpolated points
@@ -1544,7 +1548,7 @@ class RadialNet(gtk.DrawingArea):
 
         # animation continue condition
         if index < self.__number_of_frames - 1:
-            gobject.timeout_add(self.__animation_rate, # time to recall
+            GObject.timeout_add(self.__animation_rate, # time to recall
                                 self.__livens_up,      # recursive call
                                 index + 1)             # next iteration
         else:
@@ -1763,7 +1767,7 @@ class NetNode(Node):
         if info == None:
             return self.__draw_info
 
-        if self.__draw_info.has_key(info):
+        if info in self.__draw_info:
             return self.__draw_info[info]
             
         return None

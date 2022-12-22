@@ -18,8 +18,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-import gtk
-import pango
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
 
 from core.I18n import _
 from core.Info import INFO
@@ -27,13 +28,13 @@ from gui.Image import Pixmaps
 
 
 
-class AboutDialog(gtk.AboutDialog):
+class AboutDialog(Gtk.AboutDialog):
     """
     """
     def __init__(self):
         """
         """
-        gtk.AboutDialog.__init__(self)
+        Gtk.AboutDialog.__init__(self)
 
         self.set_name(INFO['name'])
         self.set_version(INFO['version'])

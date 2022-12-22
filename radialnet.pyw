@@ -21,7 +21,10 @@
 
 import os
 import sys
-import gtk
+
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
 
 import core.I18n
 
@@ -45,15 +48,6 @@ Options:
 Suggestions or bug reports can be send to <ignotus21@gmail.com>.\
 """)
 
-# check for psyco
-try:
-
-    import psyco
-    psyco.full()
-
-except ImportError:
-    print _("Running without psyco (http://psyco.sourceforge.net/).")
-
 
 
 if __name__ == '__main__':
@@ -63,7 +57,7 @@ if __name__ == '__main__':
 
     if argvh.has_option('-h') or argvh.has_option('--help'):
 
-        print USAGE
+        print(USAGE)
         sys.exit(0)
 
     application = Application()

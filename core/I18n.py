@@ -56,4 +56,4 @@ _ = translation.gettext
 if __name__ == "__main__":
 
 
-    print _("RadialNet supports i18n.")
+    print(_("RadialNet supports i18n."))

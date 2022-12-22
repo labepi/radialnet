@@ -18,7 +18,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+
 import bestwidgets as bw
 
 from util.integration import make_graph_from_nmap_parser
@@ -60,7 +63,8 @@ class Application(bw.BWMainWindow):
 
         self.__control_sw = bw.BWScrolledWindow()
         self.__control_sw.add_with_viewport(self.__control)
-        self.__control_sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        self.__control_sw.set_policy(Gtk.PolicyType.NEVER,
+                                     Gtk.PolicyType.AUTOMATIC)
 
         self.__fisheye = ControlFisheye(self.__radialnet)
         self.__toolbar = Toolbar(self.__radialnet,
@@ -79,9 +83,9 @@ class Application(bw.BWMainWindow):
 
         self.add(self.__vbox)
         self.set_title(" ".join([INFO['name'], INFO['version']]))
-        self.set_position(gtk.WIN_POS_CENTER)
+        self.set_position(Gtk.WindowPosition.CENTER)
         self.show_all()
-        self.connect('destroy', gtk.main_quit)
+        self.connect('destroy', Gtk.main_quit)
 
         self.__radialnet.set_no_show_all(True)
         self.__control.set_no_show_all(True)
@@ -97,13 +101,11 @@ class Application(bw.BWMainWindow):
         """
         """
         if state:
-
-            self.__statusbar.set_has_resize_grip(False)
+            #self.__statusbar.set_has_resize_grip(False)
             self.fullscreen()
 
         else:
-
-            self.__statusbar.set_has_resize_grip(True)
+            #self.__statusbar.set_has_resize_grip(True)
             self.unfullscreen()
 
 
@@ -139,4 +141,4 @@ class Application(bw.BWMainWindow):
     def start(self):
         """
         """
-        gtk.main()
+        Gtk.main()

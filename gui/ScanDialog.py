@@ -18,7 +18,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+
 import bestwidgets as bw
 import gui.BackendForm as Backend
 
@@ -30,15 +33,15 @@ DIMENSION = (640, 400)
 BACKEND_NMAP = 0
 
 
-class ScanToolbar(gtk.Toolbar):
+class ScanToolbar(Gtk.Toolbar):
     """
     """
     def __init__(self, window):
         """
         """
-        gtk.Toolbar.__init__(self)
-        self.set_style(gtk.TOOLBAR_BOTH_HORIZ)
-        self.set_tooltips(True)
+        Gtk.Toolbar.__init__(self)
+        self.set_style(Gtk.ToolbarStyle.BOTH_HORIZ)
+        #self.set_tooltips(True)
 
         self.__window = window
 
@@ -48,13 +51,13 @@ class ScanToolbar(gtk.Toolbar):
     def __create_widgets(self):
         """
         """
-        self.__tooltips = gtk.Tooltips()
+        #self.__tooltips = Gtk.Tooltips()
 
-        self.__nmap = gtk.RadioToolButton(None, gtk.STOCK_FIND)
+        self.__nmap = Gtk.RadioToolButton(None, Gtk.STOCK_FIND)
         self.__nmap.set_label('Nmap')
         self.__nmap.set_is_important(True)
         self.__nmap.connect('toggled', self.__backend_callback, BACKEND_NMAP)
-        self.__nmap.set_tooltip(self.__tooltips, _("Nmap as backend"))
+        self.__nmap.set_tooltip_text(_("Nmap as backend"))
         self.__nmap.set_active(True)
 
         self.__backend_callback(self.__nmap, BACKEND_NMAP)
@@ -82,7 +85,7 @@ class ScanDialog(bw.BWMainWindow):
         self.__backend = None
         self.__window = window
 
-        self.set_position(gtk.WIN_POS_CENTER)
+        self.set_position(Gtk.WindowPosition.CENTER)
 
         self.__create_widgets()
 
@@ -120,6 +123,6 @@ if __name__ == "__main__":
     d = ScanDialog(None)
     d.show_all()
 
-    d.connect('destroy', gtk.main_quit)
+    d.connect('destroy', Gtk.main_quit)
 
-    gtk.main()
+    Gtk.main()

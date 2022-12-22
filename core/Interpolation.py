@@ -77,7 +77,7 @@ class Linear2DInterpolator:
         a_pass = 0
         b_pass = 0
 
-        self.__interpolated_points = range(number_of_pass)
+        self.__interpolated_points = list(range(number_of_pass))
 
         for i in range(0, number_of_pass):
 
@@ -122,5 +122,5 @@ if __name__ == "__main__":
     i.set_start_point(0, 0)
     i.set_final_point(1, 1)
 
-    print len(i.get_points(10)), i.get_points(10)
+    print(len(i.get_points(10)), i.get_points(10))
 

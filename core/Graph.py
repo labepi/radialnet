@@ -80,7 +80,7 @@ class Node(object):
         if info == None:
             return self.__information
 
-        if self.__information.has_key(info):
+        if info in self.__information:
             return self.__information[info]
             
         return None
@@ -321,7 +321,7 @@ class Graph:
             mean = edge.get_weigths_mean()
 
             if mean != None:
-                if mean > max_value or max_value == None:
+                if  max_value == None or mean > max_value:
                     max_value = mean
 
         self.__max_edge_mean_value = max_value
@@ -337,7 +337,7 @@ class Graph:
             mean = edge.get_weigths_mean()
 
             if mean != None:
-                if mean < min_value or min_value == None:
+                if min_value == None or mean < min_value:
                     min_value = mean
 
         self.__min_edge_mean_value = min_value

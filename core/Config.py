@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 import os
-import ConfigParser
+import configparser
 
 from core.Path import path
 
@@ -32,7 +32,7 @@ class Config:
         """
         self.__file = os.path.join(path.get_dirbase(), file)
 
-        self.__handle = ConfigParser.ConfigParser()
+        self.__handle = configparser.ConfigParser()
         self.__handle.read(self.__file)
 
 
