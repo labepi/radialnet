@@ -24,7 +24,7 @@ from core.Path import path
 
 INFO = {'name' :     'RadialNet',
         'version':   '0.45',
-        'website':   'http://www.dca.ufrn.br/~joaomedeiros/radialnet/',
+        'website':   'https://github.com/labepi/radialnet',
         'authors':   ['João Paulo de Souza Medeiros'],
         'license':   open(os.path.join(path.get_dirbase(), 'LICENSE')).read(),
         'copyright': 'Copyright (C) 2007-2014 Joao Paulo de Souza Medeiros'}
