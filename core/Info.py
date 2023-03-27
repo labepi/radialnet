@@ -27,4 +27,4 @@ INFO = {'name' :     'RadialNet',
         'website':   'https://github.com/labepi/radialnet',
         'authors':   ['João Paulo de Souza Medeiros'],
         'license':   open(os.path.join(path.get_dirbase(), 'LICENSE')).read(),
-        'copyright': 'Copyright (C) 2007-2014 Joao Paulo de Souza Medeiros'}
+        'copyright': 'Copyright (C) 2007-2023 Joao Paulo de Souza Medeiros'}
