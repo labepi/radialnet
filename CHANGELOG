@@ -1,3 +1,13 @@
+RadialNet 0.5
+--------------
+
+o Solve GTK critical assertions
+
+o Update to work with Python 3 and GTK 3
+
+o Update the bestwidgets submodule.
+
+
 RadialNet 0.45
 --------------
 

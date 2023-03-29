@@ -23,7 +23,7 @@ from core.Path import path
 
 
 INFO = {'name' :     'RadialNet',
-        'version':   '0.45',
+        'version':   '0.5',
         'website':   'https://github.com/labepi/radialnet',
         'authors':   ['João Paulo de Souza Medeiros'],
         'license':   open(os.path.join(path.get_dirbase(), 'LICENSE')).read(),
