@@ -33,10 +33,15 @@ from gui.ScanDialog import ScanDialog
 SHOW = True
 HIDE = False
 
-FILE_CHOOSER_BUTTONS = (Gtk.STOCK_CANCEL,
-                        Gtk.ResponseType.CANCEL,
-                        Gtk.STOCK_OPEN,
-                        Gtk.ResponseType.OK)
+FILE_CHOOSER_OPEN_BUTTONS = (Gtk.STOCK_CANCEL,
+                             Gtk.ResponseType.CANCEL,
+                             Gtk.STOCK_OPEN,
+                             Gtk.ResponseType.OK)
+
+FILE_CHOOSER_SAVE_BUTTONS = (Gtk.STOCK_CANCEL,
+                             Gtk.ResponseType.CANCEL,
+                             Gtk.STOCK_SAVE,
+                             Gtk.ResponseType.OK)
 
 REFRESH_RATE = 500
 
@@ -58,17 +63,22 @@ class ToolsMenu(Gtk.Menu):
     def __create_items(self):
         """
         """
-        self.__hosts = Gtk.ImageMenuItem(_("Hosts viewer"))
+        self.__hosts = Gtk.ImageMenuItem(_("Hosts Viewer"))
         self.__hosts.connect("activate", self.__hosts_viewer_callback)
-        self.__hosts_image = Gtk.Image()
-        #self.__hosts_image.set_from_stock(Gtk.STOCK_INDEX, Gtk.ICON_SIZE_MENU)
-        self.__hosts_image.new_from_icon_name(Gtk.STOCK_INDEX,
-                                              Gtk.IconSize.MENU)
+        self.__hosts_image = Gtk.Image.new_from_icon_name("x-office-address-book",
+                                                          Gtk.IconSize.MENU)
         self.__hosts.set_image(self.__hosts_image)
-
         self.append(self.__hosts)
 
+        self.__export = Gtk.ImageMenuItem(_("Save Image"))
+        self.__export.connect("activate", self.__export_callback)
+        self.__export_image = Gtk.Image.new_from_icon_name("document-save",
+                                                           Gtk.IconSize.MENU)
+        self.__export.set_image(self.__export_image)
+        self.append(self.__export)
+
         self.__hosts.show_all()
+        self.__export.show_all()
 
 
     def __hosts_viewer_callback(self, widget):
@@ -79,16 +89,33 @@ class ToolsMenu(Gtk.Menu):
         window.set_keep_above(True)
 
 
+    def __export_callback(self, widget):
+        """
+        """
+        self.__chooser = Gtk.FileChooserDialog(_("Save PNG Image"),
+                                               None,
+                                               Gtk.FileChooserAction.SAVE,
+                                               FILE_CHOOSER_SAVE_BUTTONS)
+        self.__chooser.set_keep_above(True)
+
+        if self.__chooser.run() == Gtk.ResponseType.OK:
+            self.radialnet.save_drawing_to_file(self.__chooser.get_filename())
+
+        self.__chooser.destroy()
+
+
     def enable_dependents(self):
         """
         """
         self.__hosts.set_sensitive(True)
+        self.__export.set_sensitive(True)
 
 
     def disable_dependents(self):
         """
         """
         self.__hosts.set_sensitive(False)
+        self.__export.set_sensitive(False)
 
 
 
@@ -223,7 +250,7 @@ class Toolbar(Gtk.Toolbar):
         self.__chooser = Gtk.FileChooserDialog(_("Open a Nmap XML file"),
                                                None,
                                                Gtk.FileChooserAction.OPEN,
-                                               FILE_CHOOSER_BUTTONS)
+                                               FILE_CHOOSER_OPEN_BUTTONS)
         self.__chooser.set_keep_above(True)
 
         if self.__chooser.run() == Gtk.ResponseType.OK:

@@ -25,6 +25,7 @@ from gi.repository import Gtk, Gdk, GObject
 import math
 import time
 import copy
+import cairo
 
 import util.geometry as geometry
 import util.misc as misc
@@ -1677,6 +1678,26 @@ class RadialNet(Gtk.DrawingArea):
         self.__reverse_sorted_nodes = copy.copy(nodes)
         self.__reverse_sorted_nodes.reverse()
 
+    def save_drawing_to_file(self, filename):
+        """
+        """
+        allocation = self.get_allocation()
+        self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
+                                          allocation.width,
+                                          allocation.height)
+        self.context = cairo.Context(self.surface)
+        self.context.rectangle(0, 0, allocation.width, allocation.height)
+        self.context.set_source_rgb(1.0, 1.0, 1.0)
+        self.context.fill()
+
+        self.__draw()
+
+        self.surface.write_to_png(filename)
+        self.surface.flush()
+        self.surface.finish()
+
+        return True
+    
 
 
 class NetNode(Node):
@@ -1829,4 +1850,3 @@ class NetNode(Node):
 
         self.set_draw_info({'children_need':sum_angle})
         self.set_draw_info({'space_need':max(sum_angle, own_angle)})
-
